@@ -158,7 +158,7 @@ class ExamManager {
                 <p><strong>Durée:</strong> ${nextExam.duration !== "NAN" ? nextExam.duration + " min" : "Non précisée"}</p>
                 <p><strong>Lieu:</strong> ${nextExam.location !== "NAN" ? nextExam.location : "À définir"}</p>
                 <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
-                    👆 Cliquer pour plus de détails
+                     Cliquer pour plus de détails
                 </div>
             </div>
             ${upcomingExams.length > 0 ? `
@@ -171,7 +171,7 @@ class ExamManager {
                                 ${this.getTimeLeft(exam.datetime)}
                             </div>
                             <div style="text-align: center; margin-top: 5px; color: var(--text-light); font-size: 0.8rem;">
-                                👆 Cliquer pour détails
+                                Cliquer pour détails
                             </div>
                         </div>
                     `).join('')}
@@ -221,7 +221,7 @@ class ExamManager {
                             ${exam.coefficient !== "NAN" ? `<p><strong>💯</strong> ${exam.coefficient}</p>` : ''}
                             <div class="exam-countdown" data-datetime="${exam.datetime.toISOString()}">${timeLeft}</div>
                             <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
-                                👆 Cliquer pour plus de détails
+                                 Cliquer pour plus de détails
                             </div>
                         </div>
                     `;
@@ -242,7 +242,7 @@ class ExamManager {
                         ${exam.coefficient !== "NAN" ? `<p><strong>💯</strong> ${exam.coefficient}</p>` : ''}
                         ${exam.status === "to_confirm" ? '<p style="color: var(--warning);">⚠️ À confirmer</p>' : ''}
                         <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
-                            👆 Cliquer pour plus de détails
+                             Cliquer pour plus de détails
                         </div>
                     </div>
                 `).join('')}
