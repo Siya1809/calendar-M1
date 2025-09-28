@@ -304,11 +304,18 @@ body {
 
 .calendar-day {
     background: var(--surface);
-    min-height: 80px;
-    padding: 8px 4px;
+    min-height: 100px;
+    padding: 6px;
     position: relative;
     border: 1px solid transparent;
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.calendar-day.has-exams {
+    border-left: 3px solid var(--primary);
 }
 
 .calendar-day:hover {
@@ -328,37 +335,54 @@ body {
 
 .day-number {
     font-weight: 600;
-    margin-bottom: 4px;
-    text-align: center;
+    margin-bottom: 6px;
+    text-align: left;
+    font-size: 0.9rem;
+    color: var(--text);
 }
 
 .day-exam {
     background: var(--primary);
     color: white;
-    font-size: 0.7rem;
-    padding: 2px 4px;
-    border-radius: 4px;
-    margin: 1px 0;
-    text-align: center;
+    font-size: 0.75rem;
+    padding: 4px 6px;
+    border-radius: 6px;
+    margin: 2px 0;
+    text-align: left;
     cursor: pointer;
     transition: all 0.3s ease;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 1.2;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .day-exam:hover {
-    transform: scale(1.05);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     z-index: 10;
     position: relative;
-    white-space: normal;
-    overflow: visible;
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
-.day-exam.type-cc { background: #c53030; }
-.day-exam.type-examen { background: #dd6b20; }
-.day-exam.type-tpn { background: #38a169; }
-.day-exam.type-tp { background: #3182ce; }
+.day-exam.type-cc { 
+    background: linear-gradient(135deg, #e53e3e, #c53030);
+    border-color: rgba(229, 62, 62, 0.3);
+}
+.day-exam.type-examen { 
+    background: linear-gradient(135deg, #f56500, #dd6b20);
+    border-color: rgba(245, 101, 0, 0.3);
+}
+.day-exam.type-tpn { 
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    border-color: rgba(72, 187, 120, 0.3);
+}
+.day-exam.type-tp { 
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+    border-color: rgba(66, 153, 225, 0.3);
+}
 
 .calendar-legend {
     display: flex;
@@ -380,10 +404,10 @@ body {
     border-radius: 50%;
 }
 
-.legend-dot.type-cc { background: #c53030; }
-.legend-dot.type-examen { background: #dd6b20; }
-.legend-dot.type-tpn { background: #38a169; }
-.legend-dot.type-tp { background: #3182ce; }
+.legend-dot.type-cc { background: linear-gradient(135deg, #e53e3e, #c53030); }
+.legend-dot.type-examen { background: linear-gradient(135deg, #f56500, #dd6b20); }
+.legend-dot.type-tpn { background: linear-gradient(135deg, #48bb78, #38a169); }
+.legend-dot.type-tp { background: linear-gradient(135deg, #4299e1, #3182ce); }
 
 /* Modal/Popup */
 .modal-overlay {
@@ -546,13 +570,23 @@ body {
     }
 
     .calendar-day {
-        min-height: 60px;
-        padding: 4px 2px;
+        min-height: 80px;
+        padding: 4px;
     }
 
     .day-exam {
-        font-size: 0.6rem;
-        padding: 1px 2px;
+        font-size: 0.65rem;
+        padding: 3px 4px;
+        margin: 1px 0;
+    }
+
+    .day-exam div {
+        font-size: 0.6rem !important;
+    }
+
+    .day-number {
+        font-size: 0.8rem;
+        margin-bottom: 3px;
     }
 
     .calendar-legend {

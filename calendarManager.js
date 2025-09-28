@@ -2,12 +2,36 @@
 class CalendarManager {
     constructor(examManager) {
         this.examManager = examManager;
-        this.currentDate = new Date();
-        this.currentYear = this.currentDate.getFullYear();
-        this.currentMonth = this.currentDate.getMonth();
+        this.initStartingDate();
         
         this.initEventListeners();
         this.updateCalendar();
+    }
+
+    initStartingDate() {
+        // Trouver le prochain examen pour déterminer le mois de départ
+        const upcomingExams = this.examManager.getUpcomingExams();
+        
+        if (upcomingExams.length > 0) {
+            // Démarrer sur le mois du prochain examen
+            const nextExamDate = upcomingExams[0].datetime;
+            this.currentYear = nextExamDate.getFullYear();
+            this.currentMonth = nextExamDate.getMonth();
+        } else {
+            // Si pas d'examens à venir, prendre le premier examen valide
+            const validExams = this.examManager.validExams;
+            if (validExams.length > 0) {
+                // Trier les examens par date pour trouver le plus proche dans le temps
+                const sortedExams = validExams.sort((a, b) => a.datetime - b.datetime);
+                const firstExamDate = sortedExams[0].datetime;
+                this.currentYear = firstExamDate.getFullYear();
+                this.currentMonth = firstExamDate.getMonth();
+            } else {
+                // Fallback : démarrer à octobre 2025 (première date visible dans le JSON)
+                this.currentYear = 2025;
+                this.currentMonth = 9; // octobre (index 9)
+            }
+        }
     }
 
     initEventListeners() {

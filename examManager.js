@@ -16,8 +16,13 @@ class ExamManager {
             // Ajouter la propriété datetime à chaque examen
             this.exams = examData.map(exam => ({
                 ...exam,
-                datetime: new Date(`${exam.date}T${exam.time}`)
+                datetime: this.createDatetime(exam.date, exam.time),
+                hasValidDate: exam.date !== "NAN" && exam.date !== "TBA" && exam.time !== "NAN" && exam.time !== "TBA"
             }));
+            
+            // Séparer les examens avec et sans dates
+            this.validExams = this.exams.filter(exam => exam.hasValidDate);
+            this.pendingExams = this.exams.filter(exam => !exam.hasValidDate);
             
             this.updateDisplays();
             this.startTimers();
@@ -39,9 +44,16 @@ class ExamManager {
 
     // Pas besoin de sauvegarder en statique
 
+    createDatetime(date, time) {
+        if (date === "NAN" || date === "TBA" || time === "NAN" || time === "TBA") {
+            return null;
+        }
+        return new Date(`${date}T${time}`);
+    }
+
     getUpcomingExams() {
         const now = new Date();
-        return this.exams
+        return this.validExams
             .filter(exam => exam.datetime > now)
             .sort((a, b) => a.datetime - b.datetime);
     }
@@ -112,7 +124,7 @@ class ExamManager {
             return;
         }
 
-        container.innerHTML = upcoming.map(exam => {
+        const upcomingHtml = upcoming.map(exam => {
             const timeLeft = this.getTimeLeft(exam.datetime);
             const daysLeft = Math.ceil((exam.datetime - new Date()) / (1000 * 60 * 60 * 24));
             
@@ -123,10 +135,12 @@ class ExamManager {
             return `
                 <div class="${examClass}" onclick="examManager.showExamDetails(${exam.id})" style="cursor: pointer;">
                     <div class="exam-type type-${exam.type.toLowerCase()}">${exam.type}</div>
-                    <h3>${exam.ue}</h3>
+                    <h3>${exam.name || exam.ue}</h3>
+                    <h4 style="margin: 5px 0; color: var(--text-light); font-size: 0.9rem;">${exam.ue} ${exam.code !== "NAN" ? `(${exam.code})` : ''}</h4>
                     <p><strong>📅</strong> ${this.formatDate(exam.datetime)} à ${this.formatTime(exam.datetime)}</p>
-                    <p><strong>📍</strong> ${exam.location}</p>
-                    <p><strong>⏱️</strong> ${exam.duration} minutes</p>
+                    <p><strong>📍</strong> ${exam.location !== "NAN" ? exam.location : "Lieu à définir"}</p>
+                    <p><strong>⏱️</strong> ${exam.duration !== "NAN" ? exam.duration + " minutes" : "Durée non précisée"}</p>
+                    ${exam.coefficient !== "NAN" ? `<p><strong>💯</strong> ${exam.coefficient}</p>` : ''}
                     <div class="exam-countdown" data-datetime="${exam.datetime.toISOString()}">${timeLeft}</div>
                     <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
                         👆 Cliquer pour plus de détails
@@ -134,6 +148,28 @@ class ExamManager {
                 </div>
             `;
         }).join('');
+
+        const pendingHtml = this.pendingExams.length > 0 ? `
+            <div style="margin-top: 30px;">
+                <h3 style="color: var(--text-light); text-align: center; margin-bottom: 20px;">📋 Examens sans date confirmée</h3>
+                ${this.pendingExams.map(exam => `
+                    <div class="exam-item" onclick="examManager.showExamDetails(${exam.id})" style="cursor: pointer; opacity: 0.7; border-left-color: var(--text-light);">
+                        <div class="exam-type type-${exam.type.toLowerCase()}">${exam.type}</div>
+                        <h3>${exam.name || exam.ue}</h3>
+                        <h4 style="margin: 5px 0; color: var(--text-light); font-size: 0.9rem;">${exam.ue} ${exam.code !== "NAN" ? `(${exam.code})` : ''}</h4>
+                        <p><strong>📅</strong> Date non confirmée</p>
+                        <p><strong>📍</strong> ${exam.location !== "NAN" ? exam.location : "Lieu à définir"}</p>
+                        ${exam.coefficient !== "NAN" ? `<p><strong>💯</strong> ${exam.coefficient}</p>` : ''}
+                        ${exam.status === "to_confirm" ? '<p style="color: var(--warning);">⚠️ À confirmer</p>' : ''}
+                        <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
+                            👆 Cliquer pour plus de détails
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        ` : '';
+
+        container.innerHTML = upcomingHtml + pendingHtml;
     }
 
     showExamDetails(examId) {
@@ -141,54 +177,138 @@ class ExamManager {
         if (!exam) return;
 
         // Remplir la modale
-        document.getElementById('modalTitle').textContent = exam.ue;
+        document.getElementById('modalTitle').textContent = exam.name || exam.ue;
         
         const modalType = document.getElementById('modalType');
         modalType.textContent = exam.type;
         modalType.className = `modal-type type-${exam.type.toLowerCase()}`;
 
         const modalInfo = document.getElementById('modalInfo');
-        modalInfo.innerHTML = `
-            <div class="info-item">
-                <div class="info-icon">📅</div>
-                <div class="info-content">
-                    <div class="info-label">Date</div>
-                    <div class="info-value">${this.formatDate(exam.datetime)}</div>
+        
+        // Construire les informations selon les données disponibles
+        let infoItems = [];
+        
+        // Nom de l'UE et code
+        if (exam.ue !== exam.name) {
+            infoItems.push(`
+                <div class="info-item">
+                    <div class="info-icon">📚</div>
+                    <div class="info-content">
+                        <div class="info-label">UE</div>
+                        <div class="info-value">${exam.ue} ${exam.code !== "NAN" ? `(${exam.code})` : ''}</div>
+                    </div>
                 </div>
-            </div>
-            <div class="info-item">
-                <div class="info-icon">🕐</div>
-                <div class="info-content">
-                    <div class="info-label">Heure</div>
-                    <div class="info-value">${this.formatTime(exam.datetime)}</div>
+            `);
+        }
+        
+        // Date et heure
+        if (exam.hasValidDate) {
+            infoItems.push(`
+                <div class="info-item">
+                    <div class="info-icon">📅</div>
+                    <div class="info-content">
+                        <div class="info-label">Date</div>
+                        <div class="info-value">${this.formatDate(exam.datetime)}</div>
+                    </div>
                 </div>
-            </div>
-            <div class="info-item">
-                <div class="info-icon">⏱️</div>
-                <div class="info-content">
-                    <div class="info-label">Durée</div>
-                    <div class="info-value">${exam.duration} minutes</div>
+                <div class="info-item">
+                    <div class="info-icon">🕐</div>
+                    <div class="info-content">
+                        <div class="info-label">Heure</div>
+                        <div class="info-value">${this.formatTime(exam.datetime)}</div>
+                    </div>
                 </div>
-            </div>
+            `);
+        } else {
+            infoItems.push(`
+                <div class="info-item">
+                    <div class="info-icon">⚠️</div>
+                    <div class="info-content">
+                        <div class="info-label">Date</div>
+                        <div class="info-value">Non confirmée ${exam.status === "to_confirm" ? "(à confirmer)" : ""}</div>
+                    </div>
+                </div>
+            `);
+        }
+        
+        // Durée
+        if (exam.duration !== "NAN") {
+            infoItems.push(`
+                <div class="info-item">
+                    <div class="info-icon">⏱️</div>
+                    <div class="info-content">
+                        <div class="info-label">Durée</div>
+                        <div class="info-value">${exam.duration} minutes</div>
+                    </div>
+                </div>
+            `);
+        }
+        
+        // Lieu
+        infoItems.push(`
             <div class="info-item">
                 <div class="info-icon">📍</div>
                 <div class="info-content">
                     <div class="info-label">Lieu</div>
-                    <div class="info-value">${exam.location}</div>
+                    <div class="info-value">${exam.location !== "NAN" ? exam.location : "À définir"}</div>
                 </div>
             </div>
-        `;
+        `);
+        
+        // Coefficient
+        if (exam.coefficient !== "NAN") {
+            infoItems.push(`
+                <div class="info-item">
+                    <div class="info-icon">💯</div>
+                    <div class="info-content">
+                        <div class="info-label">Coefficient</div>
+                        <div class="info-value">${exam.coefficient}</div>
+                    </div>
+                </div>
+            `);
+        }
+        
+        // Documents autorisés
+        if (exam.documents !== "NAN") {
+            infoItems.push(`
+                <div class="info-item">
+                    <div class="info-icon">📄</div>
+                    <div class="info-content">
+                        <div class="info-label">Documents</div>
+                        <div class="info-value">${exam.documents}</div>
+                    </div>
+                </div>
+            `);
+        }
+        
+        // Description
+        if (exam.description !== "NAN") {
+            infoItems.push(`
+                <div class="info-item">
+                    <div class="info-icon">📝</div>
+                    <div class="info-content">
+                        <div class="info-label">Description</div>
+                        <div class="info-value">${exam.description}</div>
+                    </div>
+                </div>
+            `);
+        }
+        
+        modalInfo.innerHTML = infoItems.join('');
 
-        // Mettre à jour le countdown
-        const updateModalCountdown = () => {
-            const timeLeft = this.getTimeLeft(exam.datetime);
-            document.getElementById('modalCountdownValue').textContent = timeLeft;
-        };
-        
-        updateModalCountdown();
-        
-        // Stocker la fonction de mise à jour pour la clearner plus tard
-        this.modalCountdownInterval = setInterval(updateModalCountdown, 1000);
+        // Gérer le countdown selon la disponibilité de la date
+        const countdownDisplay = document.getElementById('modalCountdown');
+        if (exam.hasValidDate) {
+            countdownDisplay.style.display = 'block';
+            const updateModalCountdown = () => {
+                const timeLeft = this.getTimeLeft(exam.datetime);
+                document.getElementById('modalCountdownValue').textContent = timeLeft;
+            };
+            updateModalCountdown();
+            this.modalCountdownInterval = setInterval(updateModalCountdown, 1000);
+        } else {
+            countdownDisplay.style.display = 'none';
+        }
 
         // Afficher la modale
         document.getElementById('examModal').classList.add('active');
@@ -302,11 +422,22 @@ class ExamManager {
 
             // Examens de ce jour
             const dayExams = this.getExamsForDate(currentDate);
+            if (dayExams.length > 0) {
+                dayElement.classList.add('has-exams');
+            }
             dayExams.forEach(exam => {
                 const examElement = document.createElement('div');
                 examElement.className = `day-exam type-${exam.type.toLowerCase()}`;
-                examElement.textContent = `${exam.time} ${exam.ue}`;
-                examElement.title = `Cliquer pour voir les détails`;
+                
+                // Améliorer l'affichage du texte
+                const timeText = exam.time !== 'NAN' ? exam.time : '';
+                const ueText = exam.ue.length > 20 ? exam.ue.substring(0, 17) + '...' : exam.ue;
+                examElement.innerHTML = `
+                    <div style="font-weight: 600; font-size: 0.7rem;">${timeText}</div>
+                    <div style="font-size: 0.65rem; opacity: 0.9;">${ueText}</div>
+                `;
+                
+                examElement.title = `${exam.type} - ${exam.name}\n${exam.ue}\nCliquer pour voir les détails`;
                 examElement.style.cursor = 'pointer';
                 examElement.onclick = (e) => {
                     e.stopPropagation();
@@ -328,6 +459,6 @@ class ExamManager {
 
     getExamsForDate(date) {
         const dateString = date.toISOString().split('T')[0];
-        return this.exams.filter(exam => exam.date === dateString);
+        return this.validExams.filter(exam => exam.date === dateString);
     }
 }
