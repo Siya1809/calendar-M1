@@ -1,108 +1,553 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calendrier d'examens</title>
-  <meta name="description" content="Toutes mes dates d'examens au même endroit, disponible partout." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='80'>📅</text></svg>">
-  <style>
-    :root{--bg:#0b0c0f;--fg:#f6f7fb;--muted:#a9afc1;--card:#151824;--accent:#6ea8fe}
-    @media (prefers-color-scheme: light){:root{--bg:#f7f8fb;--fg:#0b0c0f;--muted:#4a5568;--card:#ffffff;--accent:#2563eb}}
-    *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5}
-    header{position:sticky;top:0;backdrop-filter:saturate(180%) blur(10px);background:color-mix(in oklab, var(--bg) 85%, transparent);border-bottom:1px solid color-mix(in oklab, var(--fg) 12%, transparent)}
-    .wrap{max-width:900px;margin:auto;padding:16px}
-    h1{font-size:clamp(20px,3vw,28px);margin:0;display:flex;gap:10px;align-items:center}
-    .card{background:var(--card);border:1px solid color-mix(in oklab, var(--fg) 10%, transparent);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.12);padding:12px}
-    .grid{display:grid;gap:16px}
-    .iframe-wrap{position:relative;padding-top: 65vh;min-height:420px;border-radius:12px;overflow:hidden}
-    iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-    .help{font-size:14px;color:var(--muted)}
-    footer{opacity:.8}
-    .cta{display:inline-flex;align-items:center;gap:8px;border:1px solid color-mix(in oklab, var(--fg) 18%, transparent);padding:10px 14px;border-radius:12px;text-decoration:none;color:var(--fg)}
-    .cta:hover{border-color:var(--accent);box-shadow:0 6px 14px rgba(0,0,0,.12)}
-    .notice{font-size:14px; padding:10px 12px; border-radius:10px; background:color-mix(in oklab, var(--accent) 10%, transparent); border:1px dashed color-mix(in oklab, var(--accent) 40%, transparent)}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 Calendrier Master 1</title>
+    <meta name="description" content="Calendrier d'examens Master 1 - CC, Examens, TPN">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='80'>📅</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #f56565;
+            --bg: #f7fafc;
+            --surface: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1a202c;
+                --surface: #2d3748;
+                --text: #f7fafc;
+                --text-light: #a0aec0;
+                --border: #4a5568;
+                --shadow: rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+        }
+
+        .next-exam {
+            background: linear-gradient(135deg, var(--success) 0%, #38b2ac 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .next-exam h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .countdown {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .exam-details {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--surface);
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .exam-item {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .exam-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .exam-type {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .type-cc { background: #fed7d7; color: #c53030; }
+        .type-examen { background: #fef5e7; color: #dd6b20; }
+        .type-tpn { background: #c6f6d5; color: #38a169; }
+        .type-tp { background: #bee3f8; color: #3182ce; }
+
+        .exam-countdown {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 10px;
+        }
+
+        .urgent { 
+            border-left-color: var(--danger);
+            background: linear-gradient(135deg, rgba(245, 101, 101, 0.1) 0%, rgba(245, 101, 101, 0.05) 100%);
+        }
+
+        .today { 
+            border-left-color: var(--warning);
+            background: linear-gradient(135deg, rgba(237, 137, 54, 0.1) 0%, rgba(237, 137, 54, 0.05) 100%);
+        }
+
+        .add-form {
+            display: none;
+        }
+
+        .add-form.active {
+            display: block;
+        }
+
+        .toggle-form {
+            background: linear-gradient(135deg, var(--accent) 0%, #667eea 100%);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .upcoming-timers {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .timer-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .timer-countdown {
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <div class="wrap" role="banner">
-      <h1>📅 Calendrier d'examens</h1>
-    </div>
-  </header>
-
-  <main class="wrap grid" role="main">
-    <div class="card">
-      <div class="notice" id="setupNotice">
-        <strong>Première fois ?</strong> Remplace l'URL d'intégration ci‑dessous par celle de <em>ton</em> Google Agenda public.
-        <details>
-          <summary>Comment récupérer l'URL d'intégration ?</summary>
-          <ol>
-            <li>Ouvre <a href="https://calendar.google.com" target="_blank" rel="noreferrer noopener">Google Agenda</a>.</li>
-            <li>Crée un agenda séparé nommé « Examens ».</li>
-            <li>Paramètres de cet agenda → <em>Accès aux événements</em> → coche « Rendre disponible au public » (afficher uniquement les infos de disponibilité si tu veux cacher les détails).</li>
-            <li>Section <em>Intégrer l'agenda</em> → copie l'<strong>URL d'intégration</strong> (commence par <code>https://calendar.google.com/calendar/embed?...\u0026src=...</code>).</li>
-            <li>Colle cette URL dans le champ ci‑dessous et clique « Mettre à jour ».</li>
-          </ol>
-        </details>
-      </div>
-      <div class="grid">
-        <label class="help">URL d'intégration Google Agenda
-          <input id="embedInput" placeholder="https://calendar.google.com/calendar/embed?src=..." style="width:100%;margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid color-mix(in oklab, var(--fg) 18%, transparent);background:transparent;color:var(--fg)" />
-        </label>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="cta" id="saveBtn">Mettre à jour</button>
-          <a class="cta" id="openCal" href="https://calendar.google.com" target="_blank" rel="noreferrer noopener">Ajouter un examen ↗</a>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📅 Calendrier Master 1</h1>
+            <p>Tes examens, CC et TPN en un coup d'œil</p>
         </div>
-      </div>
+
+        <!-- Prochain examen avec timer -->
+        <div class="card next-exam" id="nextExamCard">
+            <h2>🎯 Prochain examen</h2>
+            <div id="nextExamContent">
+                <div class="empty-state">
+                    <div class="icon">📚</div>
+                    <p>Aucun examen programmé</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire d'ajout -->
+        <div class="card">
+            <button class="btn toggle-form" id="toggleFormBtn">➕ Ajouter un examen</button>
+            
+            <form class="add-form" id="addExamForm">
+                <div class="form-group">
+                    <label for="ue">UE (Unité d'Enseignement)</label>
+                    <input type="text" class="form-control" id="ue" required placeholder="ex: Algorithmique">
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <select class="form-control" id="type" required>
+                        <option value="">Choisir le type</option>
+                        <option value="CC">CC (Contrôle Continu)</option>
+                        <option value="EXAMEN">Examen</option>
+                        <option value="TPN">TPN</option>
+                        <option value="TP">TP</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" class="form-control" id="date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="time">Heure</label>
+                    <input type="time" class="form-control" id="time" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration">Durée (en minutes)</label>
+                    <input type="number" class="form-control" id="duration" required placeholder="ex: 120" min="15" max="480">
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Lieu</label>
+                    <input type="text" class="form-control" id="location" required placeholder="ex: Amphi A">
+                </div>
+
+                <button type="submit" class="btn">💾 Enregistrer</button>
+            </form>
+        </div>
+
+        <!-- Liste des examens -->
+        <div class="card">
+            <h2>📋 Tous les examens</h2>
+            <div id="examsList">
+                <!-- Les examens seront affichés ici -->
+            </div>
+        </div>
     </div>
 
-    <div class="card">
-      <div class="iframe-wrap">
-        <!-- Remplace la valeur par défaut si tu veux forcer une URL spécifique dans le code -->
-        <iframe id="calendarFrame" title="Agenda des examens" src="about:blank" loading="lazy"></iframe>
-      </div>
-      <p class="help">Astuce : ajoute cette page à l'écran d'accueil de ton téléphone pour l'avoir comme une appli.</p>
-    </div>
+    <script>
+        // Gestion des données
+        class ExamManager {
+            constructor() {
+                this.exams = this.loadExams();
+                this.updateDisplays();
+                this.startTimers();
+            }
 
-    <footer class="help">
-      Fait avec ❤️. Tout ce site est statique : aucun mot de passe, aucune base de données. L'agenda s'affiche en lecture seule via Google Agenda.
-    </footer>
-  </main>
+            loadExams() {
+                const stored = localStorage.getItem('master1_exams');
+                return stored ? JSON.parse(stored) : [];
+            }
 
-  <script>
-    const KEY = 'exam_calendar_embed_url_v1';
-    const input = document.getElementById('embedInput');
-    const frame = document.getElementById('calendarFrame');
-    const notice = document.getElementById('setupNotice');
-    const save = document.getElementById('saveBtn');
+            saveExams() {
+                localStorage.setItem('master1_exams', JSON.stringify(this.exams));
+            }
 
-    function apply(url){
-      if(!url) return;
-      try{
-        const u = new URL(url);
-        if(u.hostname.includes('calendar.google.com')){
-          frame.src = url;
-          input.value = url;
-          localStorage.setItem(KEY, url);
-          notice.style.display = 'none';
-        } else {
-          alert('URL non valide : colle une URL d\'intégration Google Agenda.');
+            addExam(examData) {
+                const exam = {
+                    id: Date.now(),
+                    ...examData,
+                    datetime: new Date(`${examData.date}T${examData.time}`)
+                };
+                this.exams.push(exam);
+                this.saveExams();
+                this.updateDisplays();
+            }
+
+            deleteExam(id) {
+                this.exams = this.exams.filter(exam => exam.id !== id);
+                this.saveExams();
+                this.updateDisplays();
+            }
+
+            getUpcomingExams() {
+                const now = new Date();
+                return this.exams
+                    .filter(exam => exam.datetime > now)
+                    .sort((a, b) => a.datetime - b.datetime);
+            }
+
+            getNextExam() {
+                const upcoming = this.getUpcomingExams();
+                return upcoming.length > 0 ? upcoming[0] : null;
+            }
+
+            updateDisplays() {
+                this.displayNextExam();
+                this.displayAllExams();
+            }
+
+            displayNextExam() {
+                const nextExam = this.getNextExam();
+                const content = document.getElementById('nextExamContent');
+                
+                if (!nextExam) {
+                    content.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">📚</div>
+                            <p>Aucun examen programmé</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const timeLeft = this.getTimeLeft(nextExam.datetime);
+                const upcomingExams = this.getUpcomingExams().slice(1, 3); // 2 examens suivants
+
+                content.innerHTML = `
+                    <div class="countdown" id="mainCountdown">${timeLeft}</div>
+                    <div class="exam-details">
+                        <h3>${nextExam.ue}</h3>
+                        <p><strong>Type:</strong> ${nextExam.type}</p>
+                        <p><strong>Date:</strong> ${this.formatDate(nextExam.datetime)}</p>
+                        <p><strong>Heure:</strong> ${this.formatTime(nextExam.datetime)}</p>
+                        <p><strong>Durée:</strong> ${nextExam.duration} min</p>
+                        <p><strong>Lieu:</strong> ${nextExam.location}</p>
+                    </div>
+                    ${upcomingExams.length > 0 ? `
+                        <div class="upcoming-timers">
+                            ${upcomingExams.map(exam => `
+                                <div class="timer-item">
+                                    <div>${exam.ue} - ${exam.type}</div>
+                                    <div class="timer-countdown" data-datetime="${exam.datetime.toISOString()}">
+                                        ${this.getTimeLeft(exam.datetime)}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                `;
+            }
+
+            displayAllExams() {
+                const container = document.getElementById('examsList');
+                const upcoming = this.getUpcomingExams();
+                
+                if (upcoming.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">📝</div>
+                            <p>Aucun examen planifié</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = upcoming.map(exam => {
+                    const timeLeft = this.getTimeLeft(exam.datetime);
+                    const daysLeft = Math.ceil((exam.datetime - new Date()) / (1000 * 60 * 60 * 24));
+                    
+                    let examClass = 'exam-item';
+                    if (daysLeft <= 1) examClass += ' urgent';
+                    else if (daysLeft <= 3) examClass += ' today';
+
+                    return `
+                        <div class="${examClass}">
+                            <div class="exam-type type-${exam.type.toLowerCase()}">${exam.type}</div>
+                            <h3>${exam.ue}</h3>
+                            <p><strong>📅</strong> ${this.formatDate(exam.datetime)} à ${this.formatTime(exam.datetime)}</p>
+                            <p><strong>📍</strong> ${exam.location}</p>
+                            <p><strong>⏱️</strong> ${exam.duration} minutes</p>
+                            <div class="exam-countdown" data-datetime="${exam.datetime.toISOString()}">${timeLeft}</div>
+                            <button onclick="examManager.deleteExam(${exam.id})" style="background: var(--danger); color: white; border: none; padding: 8px 16px; border-radius: 8px; margin-top: 10px; cursor: pointer;">🗑️ Supprimer</button>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            getTimeLeft(datetime) {
+                const now = new Date();
+                const diff = datetime - now;
+                
+                if (diff <= 0) return "Terminé";
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                if (days > 0) return `${days}j ${hours}h ${minutes}m`;
+                if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+                return `${minutes}m ${seconds}s`;
+            }
+
+            formatDate(date) {
+                return date.toLocaleDateString('fr-FR', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            }
+
+            formatTime(date) {
+                return date.toLocaleTimeString('fr-FR', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            }
+
+            startTimers() {
+                setInterval(() => {
+                    // Mettre à jour le timer principal
+                    const mainCountdown = document.getElementById('mainCountdown');
+                    if (mainCountdown) {
+                        const nextExam = this.getNextExam();
+                        if (nextExam) {
+                            mainCountdown.textContent = this.getTimeLeft(nextExam.datetime);
+                        }
+                    }
+
+                    // Mettre à jour tous les timers
+                    document.querySelectorAll('[data-datetime]').forEach(element => {
+                        const datetime = new Date(element.dataset.datetime);
+                        element.textContent = this.getTimeLeft(datetime);
+                    });
+                }, 1000);
+            }
         }
-      }catch(e){
-        alert('URL invalide.');
-      }
-    }
 
-    save.addEventListener('click',()=>apply(input.value.trim()));
+        // Initialisation
+        const examManager = new ExamManager();
 
-    // Valeur par défaut si présente dans le hash ?embed=...
-    const params = new URLSearchParams(location.hash.slice(1));
-    const fromHash = params.get('embed');
+        // Gestion du formulaire
+        document.getElementById('toggleFormBtn').addEventListener('click', () => {
+            const form = document.getElementById('addExamForm');
+            const btn = document.getElementById('toggleFormBtn');
+            
+            form.classList.toggle('active');
+            btn.textContent = form.classList.contains('active') ? '❌ Annuler' : '➕ Ajouter un examen';
+        });
 
-    // Priorité : hash > localStorage
-    const stored = localStorage.getItem(KEY);
-    apply(fromHash || stored);
-  </script>
+        document.getElementById('addExamForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                ue: document.getElementById('ue').value,
+                type: document.getElementById('type').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value,
+                duration: parseInt(document.getElementById('duration').value),
+                location: document.getElementById('location').value
+            };
+
+            examManager.addExam(formData);
+            
+            // Reset form
+            e.target.reset();
+            document.getElementById('addExamForm').classList.remove('active');
+            document.getElementById('toggleFormBtn').textContent = '➕ Ajouter un examen';
+        });
+
+        // Définir la date minimum à aujourd'hui
+        document.getElementById('date').min = new Date().toISOString().split('T')[0];
+    </script>
 </body>
 </html>
