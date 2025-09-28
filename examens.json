@@ -271,14 +271,14 @@
             "ue_id": "M1if07",
             "type": "CC",
             "name": "Partiel",
-            "date": "NAN",
-            "time": "NAN",
+            "date": "2025-11-13",
+            "time": "08:00",
             "duration": "NAN",
-            "location": "NAN",
+            "location": "Amphi Astrée 13",
             "description": "Partiel d'algorithmique",
             "coefficient": "40%",
             "documents": "NAN",
-            "status": "date_missing"
+            "status": "confirmed"
         },
         {
             "id": 18,
