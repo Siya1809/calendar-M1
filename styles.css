@@ -1,0 +1,591 @@
+/* Variables CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #667eea;
+    --primary-dark: #5a67d8;
+    --secondary: #764ba2;
+    --accent: #f093fb;
+    --success: #48bb78;
+    --warning: #ed8936;
+    --danger: #f56565;
+    --bg: #f7fafc;
+    --surface: #ffffff;
+    --text: #2d3748;
+    --text-light: #718096;
+    --border: #e2e8f0;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1a202c;
+        --surface: #2d3748;
+        --text: #f7fafc;
+        --text-light: #a0aec0;
+        --border: #4a5568;
+        --shadow: rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* Base */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    min-height: 100vh;
+    color: var(--text);
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.header h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header p {
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+/* Cards */
+.card {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px var(--shadow);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+}
+
+/* Prochain examen */
+.next-exam {
+    background: linear-gradient(135deg, var(--success) 0%, #38b2ac 100%);
+    color: white;
+    text-align: center;
+}
+
+.next-exam h2 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+.countdown {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 15px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.exam-details {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+/* Formulaires */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-size: 16px;
+    background: var(--surface);
+    color: var(--text);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Boutons */
+.btn {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Items d'examen */
+.exam-item {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-left: 5px solid var(--primary);
+    transition: all 0.3s ease;
+}
+
+.exam-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 20px var(--shadow);
+}
+
+.exam-type {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.type-cc { background: #fed7d7; color: #c53030; }
+.type-examen { background: #fef5e7; color: #dd6b20; }
+.type-tpn { background: #c6f6d5; color: #38a169; }
+.type-tp { background: #bee3f8; color: #3182ce; }
+
+.exam-countdown {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: var(--primary);
+    margin-top: 10px;
+}
+
+.urgent { 
+    border-left-color: var(--danger);
+    background: linear-gradient(135deg, rgba(245, 101, 101, 0.1) 0%, rgba(245, 101, 101, 0.05) 100%);
+}
+
+.today { 
+    border-left-color: var(--warning);
+    background: linear-gradient(135deg, rgba(237, 137, 54, 0.1) 0%, rgba(237, 137, 54, 0.05) 100%);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-light);
+}
+
+.empty-state .icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.upcoming-timers {
+    display: grid;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.timer-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+}
+
+.timer-countdown {
+    font-size: 1.2rem;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    margin-top: 8px;
+}
+
+/* Vue Calendrier */
+.view-selector {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.view-btn {
+    padding: 12px 24px;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.view-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.view-btn:hover:not(.active) {
+    border-color: var(--primary);
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.nav-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: var(--primary-dark);
+    transform: scale(1.1);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.calendar-day-header {
+    background: var(--primary);
+    color: white;
+    padding: 12px 4px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.calendar-day {
+    background: var(--surface);
+    min-height: 80px;
+    padding: 8px 4px;
+    position: relative;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.calendar-day:hover {
+    background: rgba(102, 126, 234, 0.05);
+    border-color: var(--primary);
+}
+
+.calendar-day.other-month {
+    opacity: 0.3;
+    background: rgba(128, 128, 128, 0.1);
+}
+
+.calendar-day.today {
+    background: rgba(102, 126, 234, 0.1);
+    font-weight: bold;
+}
+
+.day-number {
+    font-weight: 600;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.day-exam {
+    background: var(--primary);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin: 1px 0;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.day-exam:hover {
+    transform: scale(1.05);
+    z-index: 10;
+    position: relative;
+    white-space: normal;
+    overflow: visible;
+}
+
+.day-exam.type-cc { background: #c53030; }
+.day-exam.type-examen { background: #dd6b20; }
+.day-exam.type-tpn { background: #38a169; }
+.day-exam.type-tp { background: #3182ce; }
+
+.calendar-legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.legend-dot.type-cc { background: #c53030; }
+.legend-dot.type-examen { background: #dd6b20; }
+.legend-dot.type-tpn { background: #38a169; }
+.legend-dot.type-tp { background: #3182ce; }
+
+/* Modal/Popup */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 24px;
+    width: 100%;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: scale(0.7) translateY(50px);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.modal-overlay.active .modal {
+    transform: scale(1) translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.modal-close {
+    background: var(--danger);
+    color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.modal-close:hover {
+    background: #e53e3e;
+    transform: scale(1.1);
+}
+
+.modal-title {
+    margin: 0;
+    color: var(--text);
+    font-size: 1.4rem;
+    line-height: 1.2;
+    margin-right: 15px;
+}
+
+.modal-type {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.modal-info {
+    display: grid;
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 12px;
+    border-left: 4px solid var(--primary);
+}
+
+.info-icon {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+}
+
+.info-value {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+.countdown-display {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.countdown-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}
+
+.countdown-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .header h1 {
+        font-size: 1.7rem;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+
+    .calendar-day {
+        min-height: 60px;
+        padding: 4px 2px;
+    }
+
+    .day-exam {
+        font-size: 0.6rem;
+        padding: 1px 2px;
+    }
+
+    .calendar-legend {
+        gap: 10px;
+    }
+
+    .legend-item {
+        font-size: 0.8rem;
+    }
+
+    /* Modal mobile */
+    .modal-overlay {
+        padding: 10px;
+        align-items: flex-end;
+    }
+
+    .modal {
+        max-width: none;
+        width: 100%;
+        border-radius: 20px 20px 0 0;
+        max-height: 85vh;
+        transform: translateY(100%);
+    }
+
+    .modal-overlay.active .modal {
+        transform: translateY(0);
+    }
+
+    .modal-title {
+        font-size: 1.2rem;
+    }
+
+    .countdown-value {
+        font-size: 1.5rem;
+    }
+}
