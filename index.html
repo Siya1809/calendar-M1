@@ -244,6 +244,307 @@
             margin-top: 8px;
         }
 
+        /* Vue Calendrier */
+        .view-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .view-btn {
+            padding: 12px 24px;
+            border: 2px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .view-btn:hover:not(.active) {
+            border-color: var(--primary);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .calendar-day-header {
+            background: var(--primary);
+            color: white;
+            padding: 12px 4px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day {
+            background: var(--surface);
+            min-height: 80px;
+            padding: 8px 4px;
+            position: relative;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-day:hover {
+            background: rgba(102, 126, 234, 0.05);
+            border-color: var(--primary);
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.3;
+            background: rgba(128, 128, 128, 0.1);
+        }
+
+        .calendar-day.today {
+            background: rgba(102, 126, 234, 0.1);
+            font-weight: bold;
+        }
+
+        .day-number {
+            font-weight: 600;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        .day-exam {
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 4px;
+            border-radius: 4px;
+            margin: 1px 0;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .day-exam:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            position: relative;
+            white-space: normal;
+            overflow: visible;
+        }
+
+        .day-exam.type-cc { background: #c53030; }
+        .day-exam.type-examen { background: #dd6b20; }
+        .day-exam.type-tpn { background: #38a169; }
+        .day-exam.type-tp { background: #3182ce; }
+
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.type-cc { background: #c53030; }
+        .legend-dot.type-examen { background: #dd6b20; }
+        .legend-dot.type-tpn { background: #38a169; }
+        .legend-dot.type-tp { background: #3182ce; }
+
+        /* Modal/Popup */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.7) translateY(50px);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .modal-close:hover {
+            background: #e53e3e;
+            transform: scale(1.1);
+        }
+
+        .modal-title {
+            margin: 0;
+            color: var(--text);
+            font-size: 1.4rem;
+            line-height: 1.2;
+            margin-right: 15px;
+        }
+
+        .modal-type {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-info {
+            display: grid;
+            gap: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .info-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .info-value {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .countdown-display {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .countdown-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Animations pour mobile */
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -255,6 +556,50 @@
             
             .card {
                 padding: 20px;
+            }
+
+            .calendar-day {
+                min-height: 60px;
+                padding: 4px 2px;
+            }
+
+            .day-exam {
+                font-size: 0.6rem;
+                padding: 1px 2px;
+            }
+
+            .calendar-legend {
+                gap: 10px;
+            }
+
+            .legend-item {
+                font-size: 0.8rem;
+            }
+
+            /* Modal mobile */
+            .modal-overlay {
+                padding: 10px;
+                align-items: flex-end;
+            }
+
+            .modal {
+                max-width: none;
+                width: 100%;
+                border-radius: 20px 20px 0 0;
+                max-height: 85vh;
+                transform: translateY(100%);
+            }
+
+            .modal-overlay.active .modal {
+                transform: translateY(0);
+            }
+
+            .modal-title {
+                font-size: 1.2rem;
+            }
+
+            .countdown-value {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -280,18 +625,79 @@
 
         <!-- Info mise à jour -->
         <div class="card" style="text-align: center; background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%); color: white;">
-            <h3>📝 Calendrier mis à jour</h3>
-            <p>Dernière mise à jour : <strong>28 septembre 2025</strong></p>
-            <p style="opacity: 0.9; font-size: 0.9rem;">
-                Pour ajouter/modifier des examens, contactez l'administrateur
-            </p>
+            <h3>📝 Gestion des examens</h3>
+            <p>Les examens sont stockés dans <strong>examens.json</strong></p>
+            <details style="margin-top: 15px;">
+                <summary style="cursor: pointer; font-weight: bold;">Comment modifier les examens ?</summary>
+                <div style="text-align: left; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <p><strong>1.</strong> Ouvrez le fichier <code>examens.json</code></p>
+                    <p><strong>2.</strong> Modifiez les données selon ce format :</p>
+                    <pre style="font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; overflow-x: auto;">
+{
+  "id": 6,
+  "ue": "Nom de l'UE",
+  "type": "CC", 
+  "date": "2025-12-15",
+  "time": "14:00",
+  "duration": 120,
+  "location": "Amphi C"
+}</pre>
+                    <p><strong>Types disponibles :</strong> CC, EXAMEN, TPN, TP</p>
+                    <p><strong>Format date :</strong> YYYY-MM-DD</p>
+                    <p><strong>Format heure :</strong> HH:MM</p>
+                </div>
+            </details>
         </div>
 
-        <!-- Liste des examens -->
+        <!-- Sélecteur de vue -->
         <div class="card">
+            <div class="view-selector">
+                <button class="view-btn active" id="listViewBtn">📋 Liste</button>
+                <button class="view-btn" id="calendarViewBtn">📅 Calendrier</button>
+            </div>
+        </div>
+
+        <!-- Vue Liste -->
+        <div class="card" id="listView">
             <h2>📋 Tous les examens</h2>
             <div id="examsList">
                 <!-- Les examens seront affichés ici -->
+            </div>
+        </div>
+
+        <!-- Vue Calendrier -->
+        <div class="card" id="calendarView" style="display: none;">
+            <div class="calendar-header">
+                <button class="nav-btn" id="prevMonth">◀</button>
+                <h2 id="currentMonth">Octobre 2025</h2>
+                <button class="nav-btn" id="nextMonth">▶</button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Le calendrier sera généré ici -->
+            </div>
+            <div class="calendar-legend">
+                <div class="legend-item"><span class="legend-dot type-cc"></span> CC</div>
+                <div class="legend-item"><span class="legend-dot type-examen"></span> Examen</div>
+                <div class="legend-item"><span class="legend-dot type-tpn"></span> TPN</div>
+                <div class="legend-item"><span class="legend-dot type-tp"></span> TP</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour les détails d'examen -->
+    <div class="modal-overlay" id="examModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Détails de l'examen</h3>
+                <button class="modal-close" id="modalClose">×</button>
+            </div>
+            <div class="modal-type" id="modalType">CC</div>
+            <div class="modal-info" id="modalInfo">
+                <!-- Les détails seront injectés ici -->
+            </div>
+            <div class="countdown-display" id="modalCountdown">
+                <div class="countdown-label">Temps restant</div>
+                <div class="countdown-value" id="modalCountdownValue">--</div>
             </div>
         </div>
     </div>
@@ -300,68 +706,40 @@
         // Gestion des données
         class ExamManager {
             constructor() {
-                this.exams = this.loadExams();
-                this.updateDisplays();
-                this.startTimers();
+                this.exams = [];
+                this.loadExams();
             }
 
-            loadExams() {
-                // 📅 VOS EXAMENS ICI - Modifiez cette liste selon vos besoins
-                const staticExams = [
-                    {
-                        id: 1,
-                        ue: "Algorithmique Avancée",
-                        type: "CC",
-                        date: "2025-10-15",
-                        time: "14:00",
-                        duration: 120,
-                        location: "Amphi A",
-                        datetime: new Date("2025-10-15T14:00")
-                    },
-                    {
-                        id: 2,
-                        ue: "Base de Données",
-                        type: "EXAMEN",
-                        date: "2025-10-22",
-                        time: "09:00",
-                        duration: 180,
-                        location: "Salle Info 2",
-                        datetime: new Date("2025-10-22T09:00")
-                    },
-                    {
-                        id: 3,
-                        ue: "Réseaux",
-                        type: "TPN",
-                        date: "2025-11-05",
-                        time: "10:30",
-                        duration: 90,
-                        location: "Lab Réseau",
-                        datetime: new Date("2025-11-05T10:30")
-                    },
-                    {
-                        id: 4,
-                        ue: "Programmation Web",
-                        type: "CC",
-                        date: "2025-11-12",
-                        time: "16:00",
-                        duration: 120,
-                        location: "Salle 101",
-                        datetime: new Date("2025-11-12T16:00")
-                    },
-                    {
-                        id: 5,
-                        ue: "Mathématiques Discrètes",
-                        type: "EXAMEN",
-                        date: "2025-11-20",
-                        time: "08:00",
-                        duration: 180,
-                        location: "Amphi B",
-                        datetime: new Date("2025-11-20T08:00")
+            async loadExams() {
+                try {
+                    const response = await fetch('examens.json');
+                    if (!response.ok) {
+                        throw new Error('Impossible de charger les examens');
                     }
-                    // 👆 Ajoutez vos examens ici en suivant le même format
-                ];
+                    const examData = await response.json();
+                    
+                    // Ajouter la propriété datetime à chaque examen
+                    this.exams = examData.map(exam => ({
+                        ...exam,
+                        datetime: new Date(`${exam.date}T${exam.time}`)
+                    }));
+                    
+                    this.updateDisplays();
+                    this.startTimers();
+                } catch (error) {
+                    console.error('Erreur lors du chargement des examens:', error);
+                    this.showError('Impossible de charger les examens. Vérifiez votre connexion.');
+                }
+            }
 
-                return staticExams;
+            showError(message) {
+                const container = document.getElementById('nextExamContent');
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">⚠️</div>
+                        <p style="color: var(--danger);">${message}</p>
+                    </div>
+                `;
             }
 
             // Pas besoin de sauvegarder en statique
@@ -448,16 +826,89 @@
                     else if (daysLeft <= 3) examClass += ' today';
 
                     return `
-                        <div class="${examClass}">
+                        <div class="${examClass}" onclick="examManager.showExamDetails(${exam.id})" style="cursor: pointer;">
                             <div class="exam-type type-${exam.type.toLowerCase()}">${exam.type}</div>
                             <h3>${exam.ue}</h3>
                             <p><strong>📅</strong> ${this.formatDate(exam.datetime)} à ${this.formatTime(exam.datetime)}</p>
                             <p><strong>📍</strong> ${exam.location}</p>
                             <p><strong>⏱️</strong> ${exam.duration} minutes</p>
                             <div class="exam-countdown" data-datetime="${exam.datetime.toISOString()}">${timeLeft}</div>
+                            <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
+                                👆 Cliquer pour plus de détails
+                            </div>
                         </div>
                     `;
                 }).join('');
+            }
+
+            showExamDetails(examId) {
+                const exam = this.exams.find(e => e.id === examId);
+                if (!exam) return;
+
+                // Remplir la modale
+                document.getElementById('modalTitle').textContent = exam.ue;
+                
+                const modalType = document.getElementById('modalType');
+                modalType.textContent = exam.type;
+                modalType.className = `modal-type type-${exam.type.toLowerCase()}`;
+
+                const modalInfo = document.getElementById('modalInfo');
+                modalInfo.innerHTML = `
+                    <div class="info-item">
+                        <div class="info-icon">📅</div>
+                        <div class="info-content">
+                            <div class="info-label">Date</div>
+                            <div class="info-value">${this.formatDate(exam.datetime)}</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+                        <div class="info-content">
+                            <div class="info-label">Heure</div>
+                            <div class="info-value">${this.formatTime(exam.datetime)}</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">⏱️</div>
+                        <div class="info-content">
+                            <div class="info-label">Durée</div>
+                            <div class="info-value">${exam.duration} minutes</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div class="info-content">
+                            <div class="info-label">Lieu</div>
+                            <div class="info-value">${exam.location}</div>
+                        </div>
+                    </div>
+                `;
+
+                // Mettre à jour le countdown
+                const updateModalCountdown = () => {
+                    const timeLeft = this.getTimeLeft(exam.datetime);
+                    document.getElementById('modalCountdownValue').textContent = timeLeft;
+                };
+                
+                updateModalCountdown();
+                
+                // Stocker la fonction de mise à jour pour la clearner plus tard
+                this.modalCountdownInterval = setInterval(updateModalCountdown, 1000);
+
+                // Afficher la modale
+                document.getElementById('examModal').classList.add('active');
+                document.body.style.overflow = 'hidden'; // Empêcher le scroll
+            }
+
+            hideExamDetails() {
+                document.getElementById('examModal').classList.remove('active');
+                document.body.style.overflow = ''; // Restaurer le scroll
+                
+                // Arrêter la mise à jour du countdown
+                if (this.modalCountdownInterval) {
+                    clearInterval(this.modalCountdownInterval);
+                    this.modalCountdownInterval = null;
+                }
             }
 
             getTimeLeft(datetime) {
@@ -510,10 +961,184 @@
                     });
                 }, 1000);
             }
+
+            // Nouvelles méthodes pour le calendrier
+            generateCalendar(year, month) {
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const startDate = new Date(firstDay);
+                startDate.setDate(startDate.getDate() - firstDay.getDay());
+                
+                const calendarGrid = document.getElementById('calendarGrid');
+                calendarGrid.innerHTML = '';
+
+                // En-têtes des jours
+                const dayHeaders = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+                dayHeaders.forEach(day => {
+                    const header = document.createElement('div');
+                    header.className = 'calendar-day-header';
+                    header.textContent = day;
+                    calendarGrid.appendChild(header);
+                });
+
+                // Générer 42 jours (6 semaines)
+                for (let i = 0; i < 42; i++) {
+                    const currentDate = new Date(startDate);
+                    currentDate.setDate(startDate.getDate() + i);
+                    
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    
+                    // Classes spéciales
+                    if (currentDate.getMonth() !== month) {
+                        dayElement.classList.add('other-month');
+                    }
+                    
+                    const today = new Date();
+                    if (currentDate.toDateString() === today.toDateString()) {
+                        dayElement.classList.add('today');
+                    }
+
+                    // Numéro du jour
+                    const dayNumber = document.createElement('div');
+                    dayNumber.className = 'day-number';
+                    dayNumber.textContent = currentDate.getDate();
+                    dayElement.appendChild(dayNumber);
+
+                    // Examens de ce jour
+                    const dayExams = this.getExamsForDate(currentDate);
+                    dayExams.forEach(exam => {
+                        const examElement = document.createElement('div');
+                        examElement.className = `day-exam type-${exam.type.toLowerCase()}`;
+                        examElement.textContent = `${exam.time} ${exam.ue}`;
+                        examElement.title = `Cliquer pour voir les détails`;
+                        examElement.style.cursor = 'pointer';
+                        examElement.onclick = (e) => {
+                            e.stopPropagation();
+                            this.showExamDetails(exam.id);
+                        };
+                        dayElement.appendChild(examElement);
+                    });
+
+                    calendarGrid.appendChild(dayElement);
+                }
+
+                // Mettre à jour le titre du mois
+                const monthNames = [
+                    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+                ];
+                document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+            }
+
+            getExamsForDate(date) {
+                const dateString = date.toISOString().split('T')[0];
+                return this.exams.filter(exam => exam.date === dateString);
+            }
+        }
+
+        // Gestion du calendrier
+        class CalendarManager {
+            constructor(examManager) {
+                this.examManager = examManager;
+                this.currentDate = new Date();
+                this.currentYear = this.currentDate.getFullYear();
+                this.currentMonth = this.currentDate.getMonth();
+                
+                this.initEventListeners();
+                this.updateCalendar();
+            }
+
+            initEventListeners() {
+                // Boutons de navigation
+                document.getElementById('prevMonth').addEventListener('click', () => {
+                    this.currentMonth--;
+                    if (this.currentMonth < 0) {
+                        this.currentMonth = 11;
+                        this.currentYear--;
+                    }
+                    this.updateCalendar();
+                });
+
+                document.getElementById('nextMonth').addEventListener('click', () => {
+                    this.currentMonth++;
+                    if (this.currentMonth > 11) {
+                        this.currentMonth = 0;
+                        this.currentYear++;
+                    }
+                    this.updateCalendar();
+                });
+
+                // Sélecteur de vue
+                document.getElementById('listViewBtn').addEventListener('click', () => {
+                    this.switchView('list');
+                });
+
+                document.getElementById('calendarViewBtn').addEventListener('click', () => {
+                    this.switchView('calendar');
+                });
+            }
+
+            switchView(view) {
+                const listView = document.getElementById('listView');
+                const calendarView = document.getElementById('calendarView');
+                const listBtn = document.getElementById('listViewBtn');
+                const calendarBtn = document.getElementById('calendarViewBtn');
+
+                if (view === 'list') {
+                    listView.style.display = 'block';
+                    calendarView.style.display = 'none';
+                    listBtn.classList.add('active');
+                    calendarBtn.classList.remove('active');
+                } else {
+                    listView.style.display = 'none';
+                    calendarView.style.display = 'block';
+                    listBtn.classList.remove('active');
+                    calendarBtn.classList.add('active');
+                    this.updateCalendar();
+                }
+            }
+
+            updateCalendar() {
+                if (this.examManager.exams.length > 0) {
+                    this.examManager.generateCalendar(this.currentYear, this.currentMonth);
+                }
+            }
         }
 
         // Initialisation
         const examManager = new ExamManager();
+        let calendarManager;
+
+        // Initialiser le calendrier après le chargement des examens
+        const originalUpdateDisplays = examManager.updateDisplays;
+        examManager.updateDisplays = function() {
+            originalUpdateDisplays.call(this);
+            if (!calendarManager) {
+                calendarManager = new CalendarManager(this);
+            } else {
+                calendarManager.updateCalendar();
+            }
+        };
+
+        // Gestionnaires pour la modale
+        document.getElementById('modalClose').addEventListener('click', () => {
+            examManager.hideExamDetails();
+        });
+
+        // Fermer la modale en cliquant sur l'overlay
+        document.getElementById('examModal').addEventListener('click', (e) => {
+            if (e.target.id === 'examModal') {
+                examManager.hideExamDetails();
+            }
+        });
+
+        // Fermer la modale avec la touche Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('examModal').classList.contains('active')) {
+                examManager.hideExamDetails();
+            }
+        });
     </script>
 </body>
 </html>

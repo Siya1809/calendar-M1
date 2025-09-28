@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "ue": "Algorithmique Avancée",
+        "type": "CC",
+        "date": "2025-10-15",
+        "time": "14:00",
+        "duration": 120,
+        "location": "Amphi A"
+    },
+    {
+        "id": 2,
+        "ue": "Base de Données",
+        "type": "EXAMEN",
+        "date": "2025-10-22",
+        "time": "09:00",
+        "duration": 180,
+        "location": "Salle Info 2"
+    },
+    {
+        "id": 3,
+        "ue": "Réseaux",
+        "type": "TPN",
+        "date": "2025-11-05",
+        "time": "10:30",
+        "duration": 90,
+        "location": "Lab Réseau"
+    },
+    {
+        "id": 4,
+        "ue": "Programmation Web",
+        "type": "CC",
+        "date": "2025-11-12",
+        "time": "16:00",
+        "duration": 120,
+        "location": "Salle 101"
+    },
+    {
+        "id": 5,
+        "ue": "Mathématiques Discrètes",
+        "type": "EXAMEN",
+        "date": "2025-11-20",
+        "time": "08:00",
+        "duration": 180,
+        "location": "Amphi B"
+    }
+]
