@@ -12,11 +12,18 @@ class ExamManager {
             if (!response.ok) {
                 throw new Error('Impossible de charger les examens');
             }
-            const examData = await response.json();
+            const data = await response.json();
             
-            // Ajouter la propriété datetime à chaque examen
-            this.exams = examData.map(exam => ({
+            // Stocker les UE et examens séparément
+            this.ues = data.ues;
+            
+            // Enrichir les examens avec les infos UE et datetime
+            this.exams = data.examens.map(exam => ({
                 ...exam,
+                // Ajouter les infos de l'UE
+                ue: this.ues[exam.ue_id]?.fullName || exam.ue_id,
+                code: this.ues[exam.ue_id]?.code || exam.ue_id,
+                ue_name: this.ues[exam.ue_id]?.name || exam.ue_id,
                 datetime: this.createDatetime(exam.date, exam.time),
                 hasValidDate: exam.date !== "NAN" && exam.date !== "TBA" && exam.time !== "NAN" && exam.time !== "TBA"
             }));
@@ -52,7 +59,16 @@ class ExamManager {
         return new Date(`${date}T${time}`);
     }
 
+    // Prochains examens SANS filtre (pour le compteur principal)
     getUpcomingExams() {
+        const now = new Date();
+        return this.validExams
+            .filter(exam => exam.datetime > now)
+            .sort((a, b) => a.datetime - b.datetime);
+    }
+
+    // Prochains examens AVEC filtre (pour la liste)
+    getFilteredUpcomingExams() {
         const now = new Date();
         const filteredExams = this.getFilteredExams(this.validExams);
         return filteredExams
@@ -75,30 +91,44 @@ class ExamManager {
         const ueFilter = document.getElementById('ueFilter');
         if (!ueFilter) return;
 
-        // Obtenir toutes les UE uniques
-        const uniqueUEs = [...new Set(this.exams.map(exam => exam.ue))].sort();
+        // Obtenir toutes les UE uniques par ue_id
+        const uniqueUEIds = [...new Set(this.exams.map(exam => exam.ue_id))].sort();
         
         // Vider et repeupler le sélecteur
         ueFilter.innerHTML = '<option value="">Toutes les UE</option>';
-        uniqueUEs.forEach(ue => {
+        uniqueUEIds.forEach(ueId => {
             const option = document.createElement('option');
-            option.value = ue;
-            option.textContent = ue;
+            option.value = ueId;
+            option.textContent = this.ues[ueId]?.fullName || ueId;
             ueFilter.appendChild(option);
         });
 
-        // Ajouter l'événement de changement
-        ueFilter.addEventListener('change', (e) => {
-            this.currentUEFilter = e.target.value;
-            this.updateDisplays();
-        });
+        // Ajouter l'événement de changement (une seule fois)
+        if (!ueFilter.hasAttribute('data-initialized')) {
+            ueFilter.addEventListener('change', (e) => {
+                this.currentUEFilter = e.target.value;
+                this.updateFilterDisplay();
+                this.displayAllExams(); // Mise à jour de la liste
+                if (this.updateCalendar) {
+                    this.updateCalendar(); // Mise à jour du calendrier
+                }
+            });
+            ueFilter.setAttribute('data-initialized', 'true');
+        }
+    }
+
+    updateFilterDisplay() {
+        const ueFilter = document.getElementById('ueFilter');
+        if (ueFilter && this.currentUEFilter) {
+            ueFilter.value = this.currentUEFilter;
+        }
     }
 
     getFilteredExams(examList) {
         if (!this.currentUEFilter) {
             return examList;
         }
-        return examList.filter(exam => exam.ue === this.currentUEFilter);
+        return examList.filter(exam => exam.ue_id === this.currentUEFilter);
     }
 
     displayNextExam() {
@@ -152,46 +182,55 @@ class ExamManager {
 
     displayAllExams() {
         const container = document.getElementById('examsList');
-        const upcoming = this.getUpcomingExams();
+        const upcoming = this.getFilteredUpcomingExams(); // Utiliser la version filtrée
+        const filteredPendingExams = this.getFilteredExams(this.pendingExams);
         
-        if (upcoming.length === 0) {
+        // Vérifier s'il y a des examens (confirmés OU en attente)
+        if (upcoming.length === 0 && filteredPendingExams.length === 0) {
+            const filterText = this.currentUEFilter ? 
+                `Aucun examen trouvé pour ${this.ues[this.currentUEFilter]?.fullName || this.currentUEFilter}` :
+                'Aucun examen trouvé';
             container.innerHTML = `
                 <div class="empty-state">
                     <div class="icon">📝</div>
-                    <p>Aucun examen planifié</p>
+                    <p>${filterText}</p>
                 </div>
             `;
             return;
         }
 
-        const upcomingHtml = upcoming.map(exam => {
-            const timeLeft = this.getTimeLeft(exam.datetime);
-            const daysLeft = Math.ceil((exam.datetime - new Date()) / (1000 * 60 * 60 * 24));
-            
-            let examClass = 'exam-item';
-            if (daysLeft <= 1) examClass += ' urgent';
-            else if (daysLeft <= 3) examClass += ' today';
+        const upcomingHtml = upcoming.length > 0 ? `
+            <div style="margin-bottom: ${filteredPendingExams.length > 0 ? '20px' : '0'};">
+                ${upcoming.length > 0 && filteredPendingExams.length > 0 ? '<h3 style="color: var(--text); text-align: center; margin-bottom: 20px;">📅 Examens confirmés</h3>' : ''}
+                ${upcoming.map(exam => {
+                    const timeLeft = this.getTimeLeft(exam.datetime);
+                    const daysLeft = Math.ceil((exam.datetime - new Date()) / (1000 * 60 * 60 * 24));
+                    
+                    let examClass = 'exam-item';
+                    if (daysLeft <= 1) examClass += ' urgent';
+                    else if (daysLeft <= 3) examClass += ' today';
 
-            return `
-                <div class="${examClass}" onclick="examManager.showExamDetails(${exam.id})" style="cursor: pointer;">
-                    <div class="exam-type type-${exam.type.toLowerCase()}">${exam.type}</div>
-                    <h3>${exam.name || exam.ue}</h3>
-                    <h4 style="margin: 5px 0; color: var(--text-light); font-size: 0.9rem;">${exam.ue} ${exam.code !== "NAN" ? `(${exam.code})` : ''}</h4>
-                    <p><strong>📅</strong> ${this.formatDate(exam.datetime)} à ${this.formatTime(exam.datetime)}</p>
-                    <p><strong>📍</strong> ${exam.location !== "NAN" ? exam.location : "Lieu à définir"}</p>
-                    <p><strong>⏱️</strong> ${exam.duration !== "NAN" ? exam.duration + " minutes" : "Durée non précisée"}</p>
-                    ${exam.coefficient !== "NAN" ? `<p><strong>💯</strong> ${exam.coefficient}</p>` : ''}
-                    <div class="exam-countdown" data-datetime="${exam.datetime.toISOString()}">${timeLeft}</div>
-                    <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
-                        👆 Cliquer pour plus de détails
-                    </div>
-                </div>
-            `;
-        }).join('');
+                    return `
+                        <div class="${examClass}" onclick="examManager.showExamDetails(${exam.id})" style="cursor: pointer;">
+                            <div class="exam-type type-${exam.type.toLowerCase()}">${exam.type}</div>
+                            <h3>${exam.name || exam.ue}</h3>
+                            <h4 style="margin: 5px 0; color: var(--text-light); font-size: 0.9rem;">${exam.ue} ${exam.code !== "NAN" ? `(${exam.code})` : ''}</h4>
+                            <p><strong>📅</strong> ${this.formatDate(exam.datetime)} à ${this.formatTime(exam.datetime)}</p>
+                            <p><strong>📍</strong> ${exam.location !== "NAN" ? exam.location : "Lieu à définir"}</p>
+                            <p><strong>⏱️</strong> ${exam.duration !== "NAN" ? exam.duration + " minutes" : "Durée non précisée"}</p>
+                            ${exam.coefficient !== "NAN" ? `<p><strong>💯</strong> ${exam.coefficient}</p>` : ''}
+                            <div class="exam-countdown" data-datetime="${exam.datetime.toISOString()}">${timeLeft}</div>
+                            <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
+                                👆 Cliquer pour plus de détails
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        ` : '';
 
-        const filteredPendingExams = this.getFilteredExams(this.pendingExams);
         const pendingHtml = filteredPendingExams.length > 0 ? `
-            <div style="margin-top: 30px;">
+            <div style="margin-top: ${upcoming.length > 0 ? '20px' : '0'};">
                 <h3 style="color: var(--text-light); text-align: center; margin-bottom: 20px;">📋 Examens sans date confirmée</h3>
                 ${filteredPendingExams.map(exam => `
                     <div class="exam-item" onclick="examManager.showExamDetails(${exam.id})" style="cursor: pointer; opacity: 0.7; border-left-color: var(--text-light);">

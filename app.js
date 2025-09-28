@@ -15,6 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Fonction pour mettre à jour le calendrier lors du changement de filtre
+    examManager.updateCalendar = function() {
+        if (calendarManager) {
+            calendarManager.updateCalendar();
+        }
+    };
+
     // Gestionnaires pour la modale
     document.getElementById('modalClose').addEventListener('click', () => {
         examManager.hideExamDetails();
