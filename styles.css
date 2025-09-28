@@ -224,6 +224,13 @@ body {
     text-align: center;
 }
 
+.timer-item:hover,
+.exam-details:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 .timer-countdown {
     font-size: 1.2rem;
     font-weight: bold;
@@ -231,7 +238,25 @@ body {
     margin-top: 8px;
 }
 
-/* Vue Calendrier */
+/* Filtre et Vue */
+.filter-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filter-section select {
+    transition: all 0.3s ease;
+}
+
+.filter-section select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
 .view-selector {
     display: flex;
     gap: 10px;
@@ -591,6 +616,16 @@ body {
 
     .calendar-legend {
         gap: 10px;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .filter-section select {
+        width: 100%;
+        max-width: 250px;
     }
 
     .legend-item {

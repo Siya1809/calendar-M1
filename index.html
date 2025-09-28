@@ -27,37 +27,22 @@
             </div>
         </div>
 
-        <!-- Info mise à jour -->
-        <div class="card" style="text-align: center; background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%); color: white;">
-            <h3>📝 Gestion des examens</h3>
-            <p>Les examens sont stockés dans <strong>examens.json</strong></p>
-            <details style="margin-top: 15px;">
-                <summary style="cursor: pointer; font-weight: bold;">Comment modifier les examens ?</summary>
-                <div style="text-align: left; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-top: 10px;">
-                    <p><strong>1.</strong> Ouvrez le fichier <code>examens.json</code></p>
-                    <p><strong>2.</strong> Modifiez les données selon ce format :</p>
-                    <pre style="font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; overflow-x: auto;">
-{
-  "id": 6,
-  "ue": "Nom de l'UE",
-  "type": "CC", 
-  "date": "2025-12-15",
-  "time": "14:00",
-  "duration": 120,
-  "location": "Amphi C"
-}</pre>
-                    <p><strong>Types disponibles :</strong> CC, EXAMEN, TPN, TP</p>
-                    <p><strong>Format date :</strong> YYYY-MM-DD</p>
-                    <p><strong>Format heure :</strong> HH:MM</p>
-                </div>
-            </details>
-        </div>
-
-        <!-- Sélecteur de vue -->
+        <!-- Filtres et vue -->
         <div class="card">
-            <div class="view-selector">
-                <button class="view-btn active" id="listViewBtn">📋 Liste</button>
-                <button class="view-btn" id="calendarViewBtn">📅 Calendrier</button>
+            <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                <!-- Filtre par UE -->
+                <div class="filter-section">
+                    <label for="ueFilter" style="font-weight: 600; margin-right: 10px;">🎯 Filtrer par UE:</label>
+                    <select id="ueFilter" style="padding: 8px 12px; border-radius: 8px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.9rem;">
+                        <option value="">Toutes les UE</option>
+                    </select>
+                </div>
+                
+                <!-- Sélecteur de vue -->
+                <div class="view-selector">
+                    <button class="view-btn active" id="listViewBtn">📋 Liste</button>
+                    <button class="view-btn" id="calendarViewBtn">📅 Calendrier</button>
+                </div>
             </div>
         </div>
 

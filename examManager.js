@@ -2,6 +2,7 @@
 class ExamManager {
     constructor() {
         this.exams = [];
+        this.currentUEFilter = '';
         this.loadExams();
     }
 
@@ -53,7 +54,8 @@ class ExamManager {
 
     getUpcomingExams() {
         const now = new Date();
-        return this.validExams
+        const filteredExams = this.getFilteredExams(this.validExams);
+        return filteredExams
             .filter(exam => exam.datetime > now)
             .sort((a, b) => a.datetime - b.datetime);
     }
@@ -64,8 +66,39 @@ class ExamManager {
     }
 
     updateDisplays() {
+        this.initializeUEFilter();
         this.displayNextExam();
         this.displayAllExams();
+    }
+
+    initializeUEFilter() {
+        const ueFilter = document.getElementById('ueFilter');
+        if (!ueFilter) return;
+
+        // Obtenir toutes les UE uniques
+        const uniqueUEs = [...new Set(this.exams.map(exam => exam.ue))].sort();
+        
+        // Vider et repeupler le sélecteur
+        ueFilter.innerHTML = '<option value="">Toutes les UE</option>';
+        uniqueUEs.forEach(ue => {
+            const option = document.createElement('option');
+            option.value = ue;
+            option.textContent = ue;
+            ueFilter.appendChild(option);
+        });
+
+        // Ajouter l'événement de changement
+        ueFilter.addEventListener('change', (e) => {
+            this.currentUEFilter = e.target.value;
+            this.updateDisplays();
+        });
+    }
+
+    getFilteredExams(examList) {
+        if (!this.currentUEFilter) {
+            return examList;
+        }
+        return examList.filter(exam => exam.ue === this.currentUEFilter);
     }
 
     displayNextExam() {
@@ -87,21 +120,28 @@ class ExamManager {
 
         content.innerHTML = `
             <div class="countdown" id="mainCountdown">${timeLeft}</div>
-            <div class="exam-details">
+            <div class="exam-details" onclick="examManager.showExamDetails(${nextExam.id})" style="cursor: pointer; border-radius: 10px; padding: 15px; transition: all 0.3s ease;">
                 <h3>${nextExam.ue}</h3>
                 <p><strong>Type:</strong> ${nextExam.type}</p>
                 <p><strong>Date:</strong> ${this.formatDate(nextExam.datetime)}</p>
                 <p><strong>Heure:</strong> ${this.formatTime(nextExam.datetime)}</p>
-                <p><strong>Durée:</strong> ${nextExam.duration} min</p>
-                <p><strong>Lieu:</strong> ${nextExam.location}</p>
+                <p><strong>Durée:</strong> ${nextExam.duration !== "NAN" ? nextExam.duration + " min" : "Non précisée"}</p>
+                <p><strong>Lieu:</strong> ${nextExam.location !== "NAN" ? nextExam.location : "À définir"}</p>
+                <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
+                    👆 Cliquer pour plus de détails
+                </div>
             </div>
             ${upcomingExams.length > 0 ? `
                 <div class="upcoming-timers">
                     ${upcomingExams.map(exam => `
-                        <div class="timer-item">
+                        <div class="timer-item" onclick="examManager.showExamDetails(${exam.id})" style="cursor: pointer; transition: all 0.3s ease;">
                             <div>${exam.ue} - ${exam.type}</div>
+                            <p style="font-size: 0.8rem; margin: 5px 0; opacity: 0.8;">${this.formatDate(exam.datetime)} à ${this.formatTime(exam.datetime)}</p>
                             <div class="timer-countdown" data-datetime="${exam.datetime.toISOString()}">
                                 ${this.getTimeLeft(exam.datetime)}
+                            </div>
+                            <div style="text-align: center; margin-top: 5px; color: var(--text-light); font-size: 0.8rem;">
+                                👆 Cliquer pour détails
                             </div>
                         </div>
                     `).join('')}
@@ -149,10 +189,11 @@ class ExamManager {
             `;
         }).join('');
 
-        const pendingHtml = this.pendingExams.length > 0 ? `
+        const filteredPendingExams = this.getFilteredExams(this.pendingExams);
+        const pendingHtml = filteredPendingExams.length > 0 ? `
             <div style="margin-top: 30px;">
                 <h3 style="color: var(--text-light); text-align: center; margin-bottom: 20px;">📋 Examens sans date confirmée</h3>
-                ${this.pendingExams.map(exam => `
+                ${filteredPendingExams.map(exam => `
                     <div class="exam-item" onclick="examManager.showExamDetails(${exam.id})" style="cursor: pointer; opacity: 0.7; border-left-color: var(--text-light);">
                         <div class="exam-type type-${exam.type.toLowerCase()}">${exam.type}</div>
                         <h3>${exam.name || exam.ue}</h3>
@@ -459,6 +500,7 @@ class ExamManager {
 
     getExamsForDate(date) {
         const dateString = date.toISOString().split('T')[0];
-        return this.validExams.filter(exam => exam.date === dateString);
+        const dayExams = this.validExams.filter(exam => exam.date === dateString);
+        return this.getFilteredExams(dayExams);
     }
 }
