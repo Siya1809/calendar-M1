@@ -278,49 +278,13 @@
             </div>
         </div>
 
-        <!-- Formulaire d'ajout -->
-        <div class="card">
-            <button class="btn toggle-form" id="toggleFormBtn">➕ Ajouter un examen</button>
-            
-            <form class="add-form" id="addExamForm">
-                <div class="form-group">
-                    <label for="ue">UE (Unité d'Enseignement)</label>
-                    <input type="text" class="form-control" id="ue" required placeholder="ex: Algorithmique">
-                </div>
-
-                <div class="form-group">
-                    <label for="type">Type</label>
-                    <select class="form-control" id="type" required>
-                        <option value="">Choisir le type</option>
-                        <option value="CC">CC (Contrôle Continu)</option>
-                        <option value="EXAMEN">Examen</option>
-                        <option value="TPN">TPN</option>
-                        <option value="TP">TP</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="date" class="form-control" id="date" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="time">Heure</label>
-                    <input type="time" class="form-control" id="time" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="duration">Durée (en minutes)</label>
-                    <input type="number" class="form-control" id="duration" required placeholder="ex: 120" min="15" max="480">
-                </div>
-
-                <div class="form-group">
-                    <label for="location">Lieu</label>
-                    <input type="text" class="form-control" id="location" required placeholder="ex: Amphi A">
-                </div>
-
-                <button type="submit" class="btn">💾 Enregistrer</button>
-            </form>
+        <!-- Info mise à jour -->
+        <div class="card" style="text-align: center; background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%); color: white;">
+            <h3>📝 Calendrier mis à jour</h3>
+            <p>Dernière mise à jour : <strong>28 septembre 2025</strong></p>
+            <p style="opacity: 0.9; font-size: 0.9rem;">
+                Pour ajouter/modifier des examens, contactez l'administrateur
+            </p>
         </div>
 
         <!-- Liste des examens -->
@@ -342,30 +306,65 @@
             }
 
             loadExams() {
-                const stored = localStorage.getItem('master1_exams');
-                return stored ? JSON.parse(stored) : [];
+                // 📅 VOS EXAMENS ICI - Modifiez cette liste selon vos besoins
+                const staticExams = [
+                    {
+                        id: 1,
+                        ue: "Algorithmique Avancée",
+                        type: "CC",
+                        date: "2025-10-15",
+                        time: "14:00",
+                        duration: 120,
+                        location: "Amphi A",
+                        datetime: new Date("2025-10-15T14:00")
+                    },
+                    {
+                        id: 2,
+                        ue: "Base de Données",
+                        type: "EXAMEN",
+                        date: "2025-10-22",
+                        time: "09:00",
+                        duration: 180,
+                        location: "Salle Info 2",
+                        datetime: new Date("2025-10-22T09:00")
+                    },
+                    {
+                        id: 3,
+                        ue: "Réseaux",
+                        type: "TPN",
+                        date: "2025-11-05",
+                        time: "10:30",
+                        duration: 90,
+                        location: "Lab Réseau",
+                        datetime: new Date("2025-11-05T10:30")
+                    },
+                    {
+                        id: 4,
+                        ue: "Programmation Web",
+                        type: "CC",
+                        date: "2025-11-12",
+                        time: "16:00",
+                        duration: 120,
+                        location: "Salle 101",
+                        datetime: new Date("2025-11-12T16:00")
+                    },
+                    {
+                        id: 5,
+                        ue: "Mathématiques Discrètes",
+                        type: "EXAMEN",
+                        date: "2025-11-20",
+                        time: "08:00",
+                        duration: 180,
+                        location: "Amphi B",
+                        datetime: new Date("2025-11-20T08:00")
+                    }
+                    // 👆 Ajoutez vos examens ici en suivant le même format
+                ];
+
+                return staticExams;
             }
 
-            saveExams() {
-                localStorage.setItem('master1_exams', JSON.stringify(this.exams));
-            }
-
-            addExam(examData) {
-                const exam = {
-                    id: Date.now(),
-                    ...examData,
-                    datetime: new Date(`${examData.date}T${examData.time}`)
-                };
-                this.exams.push(exam);
-                this.saveExams();
-                this.updateDisplays();
-            }
-
-            deleteExam(id) {
-                this.exams = this.exams.filter(exam => exam.id !== id);
-                this.saveExams();
-                this.updateDisplays();
-            }
+            // Pas besoin de sauvegarder en statique
 
             getUpcomingExams() {
                 const now = new Date();
@@ -456,7 +455,6 @@
                             <p><strong>📍</strong> ${exam.location}</p>
                             <p><strong>⏱️</strong> ${exam.duration} minutes</p>
                             <div class="exam-countdown" data-datetime="${exam.datetime.toISOString()}">${timeLeft}</div>
-                            <button onclick="examManager.deleteExam(${exam.id})" style="background: var(--danger); color: white; border: none; padding: 8px 16px; border-radius: 8px; margin-top: 10px; cursor: pointer;">🗑️ Supprimer</button>
                         </div>
                     `;
                 }).join('');
@@ -516,38 +514,6 @@
 
         // Initialisation
         const examManager = new ExamManager();
-
-        // Gestion du formulaire
-        document.getElementById('toggleFormBtn').addEventListener('click', () => {
-            const form = document.getElementById('addExamForm');
-            const btn = document.getElementById('toggleFormBtn');
-            
-            form.classList.toggle('active');
-            btn.textContent = form.classList.contains('active') ? '❌ Annuler' : '➕ Ajouter un examen';
-        });
-
-        document.getElementById('addExamForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const formData = {
-                ue: document.getElementById('ue').value,
-                type: document.getElementById('type').value,
-                date: document.getElementById('date').value,
-                time: document.getElementById('time').value,
-                duration: parseInt(document.getElementById('duration').value),
-                location: document.getElementById('location').value
-            };
-
-            examManager.addExam(formData);
-            
-            // Reset form
-            e.target.reset();
-            document.getElementById('addExamForm').classList.remove('active');
-            document.getElementById('toggleFormBtn').textContent = '➕ Ajouter un examen';
-        });
-
-        // Définir la date minimum à aujourd'hui
-        document.getElementById('date').min = new Date().toISOString().split('T')[0];
     </script>
 </body>
 </html>
