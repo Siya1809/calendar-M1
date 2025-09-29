@@ -3,42 +3,50 @@
         "M1if01": {
             "code": "M1if01",
             "name": "Génie Logiciel",
-            "fullName": "M1if01 - Génie Logiciel"
+            "fullName": "M1if01 - Génie Logiciel",
+            "Link": "https://forge.univ-lyon1.fr/matthieu.moy/mif01"
         },
         "M1if03": {
             "code": "M1if03", 
             "name": "Conception d'applications Web",
-            "fullName": "M1if03 - Conception d'applications Web"
+            "fullName": "M1if03 - Conception d'applications Web",
+            "Link": "https://perso.univ-lyon1.fr/lionel.medini/enseignement/#md=M1IF03/index"
         },
         "M1if04": {
             "code": "M1if04",
-            "name": "Apprentissage et Analyse de données", 
-            "fullName": "M1if04 - Apprentissage et Analyse de données"
+            "name": "Apprentissage et Analyse de données",
+            "fullName": "M1if04 - Apprentissage et Analyse de données",
+            "Link": "https://moodle.univ-lyon1.fr/course/view.php?id=5561"
         },
         "M1if05": {
             "code": "M1if05",
             "name": "Réseaux",
-            "fullName": "M1if05 - Réseaux"
+            "fullName": "M1if05 - Réseaux",
+            "Link": "https://perso.ens-lyon.fr/isabelle.guerin-lassous/index-M1if05.htm"
         },
         "M1if06": {
             "code": "M1if06",
             "name": "Base de l'IA",
-            "fullName": "M1if06 - Base de l'IA"
+            "fullName": "M1if06 - Base de l'IA",
+            "Link": "https://perso.liris.cnrs.fr/marie.lefevre/enseignement-BIA.html"
         },
         "M1if07": {
             "code": "M1if07",
             "name": "Algorithmique pour l'optimisation",
-            "fullName": "M1if07 - Algorithmique pour l'optimisation"
+            "fullName": "M1if07 - Algorithmique pour l'optimisation",
+            "Link": "https://perso.liris.cnrs.fr/tpierron/RO2025/index.html"
         },
         "M1if23": {
             "code": "M1if23",
             "name": "Programmation Avancée",
-            "fullName": "M1if23 - Programmation Avancée"
+            "fullName": "M1if23 - Programmation Avancée",
+            "Link": "https://perso.liris.cnrs.fr/raphaelle.chaine/COURS/M1if23_Automne2025/"
         },
         "M1if24": {
             "code": "M1if24",
             "name": "BD NoSQL",
-            "fullName": "M1if24 - BD NoSQL"
+            "fullName": "M1if24 - BD NoSQL",
+            "Link": "https://forge.univ-lyon1.fr/mif24-bdnosql/mif24-bdnosql"
         }
     },
     "examens": [
@@ -48,10 +56,10 @@
             "type": "CC",
             "name": "Contrôle 2",
             "date": "2025-10-13",
-            "time": "09:45",
-            "duration": "10 ou 15",
+            "time": "12:40",
+            "duration": "15",
             "location": "Salles Nautibus TD",
-            "description": "QCM comportant 10 questions et portant sur les parties vues en CM1 et CM2. Aucun document autorisé.",
+            "description": "le TD2 se terminera par le contrôle 2 qui portera sur les parties vues en CM2 (slides 81 à 127). Il démarrera à 12h40 et durera 15 minutes (+5 minutes pour les tiers-temps). Comme pour le contrôle 1, c’est un QCM de 10 questions. Chaque question aura 4 réponses possibles dont 1 seule est correcte. La notation par question sera la suivante : 2 pts si la réponse est juste ; -0,5 pt si la réponse est fausse ; 0 pt si pas de réponse. ucun document n’est autorisé. Vous pouvez apporter une calculatrice. N’oubliez pas d’emmener un stylo bic noir ou bleu. Le numéro d’étudiant sera à remplir comme indiqué sur le slide 5 du cours (encore trop de personnes ne savaient pas remplir cette partie lors du contrôle 1). ",
             "coefficient": "14%",
             "documents": "Aucun document autorisé",
             "status": "confirmed"
@@ -67,7 +75,7 @@
             "location": "Amphi Thémis 10",
             "description": "QCM en amphithéâtre",
             "coefficient": "10%",
-            "documents": "NAN",
+            "documents": "Aucun document autorisé",
             "status": "confirmed"
         },
         {
@@ -81,7 +89,7 @@
             "location": "NAN",
             "description": "Interrogation sur la Représentation de problèmes au début du CM5",
             "coefficient": "30% (50% du CC)",
-            "documents": "NAN",
+            "documents": "Aucun document autorisé",
             "status": "confirmed"
         },
         {
@@ -90,8 +98,8 @@
             "type": "CC",
             "name": "Contrôle 3",
             "date": "2025-11-03",
-            "time": "09:45",
-            "duration": "10 ou 15",
+            "time": "12:40",
+            "duration": "15",
             "location": "Salles Nautibus",
             "description": "QCM comportant 10 questions portant sur les parties vues en CM3 et sur le projet. Aucun document autorisé.",
             "coefficient": "14%",

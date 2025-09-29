@@ -148,11 +148,11 @@ class ExamManager {
             return;
         }
 
-        const timeLeft = this.getTimeLeft(nextExam.datetime);
+        const timeData = this.getTimeLeftDetailed(nextExam.datetime);
         const upcomingExams = this.getUpcomingExams().slice(1, 3); // 2 examens suivants
 
         content.innerHTML = `
-            <div class="countdown" id="mainCountdown">${timeLeft}</div>
+            <div class="main-countdown" id="mainCountdown">${this.formatCountdown(timeData)}</div>
             <div class="exam-details" onclick="examManager.showExamDetails(${nextExam.id})" style="cursor: pointer; border-radius: 10px; padding: 15px; transition: all 0.3s ease;">
                 <h3>${nextExam.ue}</h3>
                 <p><strong>Type:</strong> ${nextExam.type}</p>
@@ -160,8 +160,8 @@ class ExamManager {
                 <p><strong>Heure:</strong> ${this.formatTime(nextExam.datetime)}</p>
                 <p><strong>Durée:</strong> ${nextExam.duration !== "NAN" ? nextExam.duration + " min" : "Non précisée"}</p>
                 <p><strong>Lieu:</strong> ${nextExam.location !== "NAN" ? nextExam.location : "À définir"}</p>
-                <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
-                     Cliquer pour plus de détails
+                <div style="text-align: center; margin-top: 10px;  font-size: 0.9rem;">
+                    👆 Cliquer pour plus de détails
                 </div>
             </div>
             ${upcomingExams.length > 0 ? `
@@ -170,11 +170,11 @@ class ExamManager {
                         <div class="timer-item" onclick="examManager.showExamDetails(${exam.id})" style="cursor: pointer; transition: all 0.3s ease;">
                             <div>${exam.ue} - ${exam.type}</div>
                             <p style="font-size: 0.8rem; margin: 5px 0; opacity: 0.8;">${this.formatDate(exam.datetime)} à ${this.formatTime(exam.datetime)}</p>
-                            <div class="timer-countdown" data-datetime="${exam.datetime.toISOString()}">
+                            <div class="timer-countdown-compact" data-datetime="${exam.datetime.toISOString()}">
                                 ${this.getTimeLeft(exam.datetime)}
                             </div>
-                            <div style="text-align: center; margin-top: 5px; color: var(--text-light); font-size: 0.8rem;">
-                                Cliquer pour détails
+                            <div style="text-align: center; margin-top: 5px;  font-size: 0.8rem;">
+                                👆 Cliquer pour détails
                             </div>
                         </div>
                     `).join('')}
@@ -279,6 +279,25 @@ class ExamManager {
                     <div class="info-content">
                         <div class="info-label">UE</div>
                         <div class="info-value">${exam.ue} ${exam.code !== "NAN" ? `(${exam.code})` : ''}</div>
+                    </div>
+                </div>
+            `);
+        }
+        
+        // Lien vers l'UE
+        const ueData = this.ues[exam.ue_id];
+        if (ueData && ueData.Link) {
+            infoItems.push(`
+                <div class="info-item">
+                    <div class="info-icon">🌐</div>
+                    <div class="info-content">
+                        <div class="info-label">Lien d'UE</div>
+                        <div class="info-value">
+                            <a href="${ueData.Link}" target="_blank" class="course-link">
+                                Accéder au cours
+                                <span class="external-icon">↗</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             `);
@@ -425,6 +444,68 @@ class ExamManager {
         return `${minutes}m ${seconds}s`;
     }
 
+    getTimeLeftDetailed(datetime) {
+        const now = new Date();
+        const diff = datetime - now;
+        
+        if (diff <= 0) return { finished: true };
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        return { 
+            finished: false,
+            days, 
+            hours, 
+            minutes, 
+            seconds,
+            total: diff
+        };
+    }
+
+    formatCountdown(timeData) {
+        if (timeData.finished) {
+            return '<div class="countdown-finished">🎯 Terminé</div>';
+        }
+
+        const { days, hours, minutes, seconds } = timeData;
+        
+        // Déterminer la couleur selon l'urgence
+        let urgencyClass = 'countdown-normal';
+        if (days === 0 && hours < 2) urgencyClass = 'countdown-critical';
+        else if (days === 0 && hours < 24) urgencyClass = 'countdown-urgent';
+        else if (days <= 1) urgencyClass = 'countdown-warning';
+
+        return `
+            <div class="countdown-container ${urgencyClass}">
+                ${days > 0 ? `
+                    <div class="countdown-unit">
+                        <div class="countdown-number">${days}</div>
+                        <div class="countdown-label">jour${days > 1 ? 's' : ''}</div>
+                    </div>
+                ` : ''}
+                ${days > 0 || hours > 0 ? `
+                    <div class="countdown-unit">
+                        <div class="countdown-number">${String(hours).padStart(2, '0')}</div>
+                        <div class="countdown-label">heure${hours > 1 ? 's' : ''}</div>
+                    </div>
+                ` : ''}
+                <div class="countdown-unit">
+                    <div class="countdown-number">${String(minutes).padStart(2, '0')}</div>
+                    <div class="countdown-label">min</div>
+                </div>
+                ${days === 0 ? `
+                    <div class="countdown-unit">
+                        <div class="countdown-number">${String(seconds).padStart(2, '0')}</div>
+                        <div class="countdown-label">sec</div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+
     formatDate(date) {
         return date.toLocaleDateString('fr-FR', { 
             weekday: 'long', 
@@ -443,17 +524,24 @@ class ExamManager {
 
     startTimers() {
         setInterval(() => {
-            // Mettre à jour le timer principal
+            // Mettre à jour le timer principal avec le nouveau format
             const mainCountdown = document.getElementById('mainCountdown');
             if (mainCountdown) {
                 const nextExam = this.getNextExam();
                 if (nextExam) {
-                    mainCountdown.textContent = this.getTimeLeft(nextExam.datetime);
+                    const timeData = this.getTimeLeftDetailed(nextExam.datetime);
+                    mainCountdown.innerHTML = this.formatCountdown(timeData);
                 }
             }
 
-            // Mettre à jour tous les timers
-            document.querySelectorAll('[data-datetime]').forEach(element => {
+            // Mettre à jour tous les timers compacts
+            document.querySelectorAll('.timer-countdown-compact[data-datetime]').forEach(element => {
+                const datetime = new Date(element.dataset.datetime);
+                element.textContent = this.getTimeLeft(datetime);
+            });
+
+            // Mettre à jour tous les autres timers
+            document.querySelectorAll('.exam-countdown[data-datetime]').forEach(element => {
                 const datetime = new Date(element.dataset.datetime);
                 element.textContent = this.getTimeLeft(datetime);
             });

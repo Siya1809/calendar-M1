@@ -190,6 +190,141 @@ body {
     margin-top: 10px;
 }
 
+/* Nouveau compteur à rebours stylé */
+.main-countdown {
+    margin-bottom: 25px;
+}
+
+.countdown-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+}
+
+.countdown-number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    font-family: 'Courier New', monospace;
+    color: #667eea;
+    line-height: 1;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.countdown-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* États d'urgence */
+.countdown-warning {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(237, 137, 54, 0.4);
+    box-shadow: 0 8px 32px rgba(237, 137, 54, 0.3);
+}
+
+.countdown-warning .countdown-number {
+    color: #ed8936;
+}
+
+.countdown-warning .countdown-label {
+    color: #c05621;
+}
+
+.countdown-urgent {
+    background: rgba(245, 101, 101, 0.95) !important;
+    border: 2px solid #f56565 !important;
+    box-shadow: 0 8px 32px rgba(245, 101, 101, 0.5);
+    animation: pulse-urgent 2s infinite;
+    backdrop-filter: none !important;
+}
+
+.countdown-urgent .countdown-number {
+    color: white !important;
+    font-weight: bold;
+}
+
+.countdown-urgent .countdown-label {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.countdown-critical {
+    background: rgba(255, 0, 0, 0.95) !important;
+    border: 3px solid #ff0000 !important;
+    box-shadow: 0 8px 32px rgba(255, 0, 0, 0.6);
+    animation: pulse-critical 1s infinite;
+    backdrop-filter: none !important;
+}
+
+.countdown-critical .countdown-number {
+    color: white !important;
+    font-weight: bold;
+    animation: blink 1s infinite;
+}
+
+.countdown-critical .countdown-label {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.countdown-finished {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #38a169;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(72, 187, 120, 0.4);
+    box-shadow: 0 8px 32px rgba(72, 187, 120, 0.3);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+/* Animations */
+@keyframes pulse-urgent {
+    0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 8px 32px rgba(245, 101, 101, 0.3);
+    }
+    50% { 
+        transform: scale(1.02); 
+        box-shadow: 0 8px 32px rgba(245, 101, 101, 0.5);
+    }
+}
+
+@keyframes pulse-critical {
+    0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 8px 32px rgba(255, 0, 0, 0.4);
+    }
+    50% { 
+        transform: scale(1.03); 
+        box-shadow: 0 12px 40px rgba(255, 0, 0, 0.6);
+    }
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.6; }
+}
+
 .urgent { 
     border-left-color: var(--danger);
     background: linear-gradient(135deg, rgba(245, 101, 101, 0.1) 0%, rgba(245, 101, 101, 0.05) 100%);
@@ -559,6 +694,33 @@ body {
     font-size: 0.95rem;
 }
 
+/* Lien du cours dans la modal */
+.course-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary);
+    text-decoration: none;
+    padding: 8px 16px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.course-link:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.external-icon {
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
 .countdown-display {
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
     color: white;
@@ -616,6 +778,24 @@ body {
 
     .calendar-legend {
         gap: 10px;
+    }
+
+    /* Compteur responsive */
+    .countdown-container {
+        gap: 8px;
+        padding: 15px 10px;
+    }
+
+    .countdown-unit {
+        min-width: 45px;
+    }
+
+    .countdown-number {
+        font-size: 1.6rem;
+    }
+
+    .countdown-label {
+        font-size: 0.65rem;
     }
 
     .filter-section {
