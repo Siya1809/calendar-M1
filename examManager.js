@@ -56,7 +56,10 @@ class ExamManager {
         if (date === "NAN" || date === "TBA" || time === "NAN" || time === "TBA") {
             return null;
         }
-        return new Date(`${date}T${time}`);
+        // Éviter les problèmes de fuseau horaire en créant la date directement
+        const [year, month, day] = date.split('-').map(Number);
+        const [hours, minutes] = time.split(':').map(Number);
+        return new Date(year, month - 1, day, hours, minutes);
     }
 
     // Prochains examens SANS filtre (pour le compteur principal)
@@ -538,7 +541,12 @@ class ExamManager {
     }
 
     getExamsForDate(date) {
-        const dateString = date.toISOString().split('T')[0];
+        // Utiliser getFullYear, getMonth, getDate pour éviter les problèmes de fuseau horaire
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const dateString = `${year}-${month}-${day}`;
+        
         const dayExams = this.validExams.filter(exam => exam.date === dateString);
         return this.getFilteredExams(dayExams);
     }
