@@ -838,3 +838,51 @@ body {
         font-size: 1.5rem;
     }
 }
+
+/* Avertissement discret */
+.disclaimer {
+    text-align: center;
+    padding: 15px 20px;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.disclaimer p {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.disclaimer p + p {
+    margin-top: 5px;
+}
+
+.disclaimer .last-update {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+}
+
+.disclaimer strong {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .disclaimer {
+        margin: 20px 10px 0;
+        padding: 12px 15px;
+    }
+    
+    .disclaimer p {
+        font-size: 0.75rem;
+    }
+    
+    .disclaimer .last-update {
+        font-size: 0.7rem;
+    }
+}
