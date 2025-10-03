@@ -17,18 +17,29 @@ class ExamManager {
             // Stocker les UE et examens séparément
             this.ues = data.ues;
             
-            // Enrichir les examens avec les infos UE et datetime
-            this.exams = data.examens.map(exam => ({
-                ...exam,
-                // Ajouter les infos de l'UE
-                ue: this.ues[exam.ue_id]?.fullName || exam.ue_id,
-                code: this.ues[exam.ue_id]?.code || exam.ue_id,
-                ue_name: this.ues[exam.ue_id]?.name || exam.ue_id,
-                datetime: this.createDatetime(exam.date, exam.time),
-                hasValidDate: exam.date !== "NAN" && exam.date !== "TBA" && exam.time !== "NAN" && exam.time !== "TBA"
-            }));
+            // Mettre à jour la date de dernière modification
+            if (data.lastUpdated) {
+                this.updateLastModifiedDate(data.lastUpdated);
+            }
             
-            // Séparer les examens avec et sans dates
+            // Enrichir les examens avec les infos UE et datetime
+            this.exams = data.examens.map(exam => {
+                const hasValidDate = exam.date !== "NAN" && exam.date !== "TBA" && exam.date !== null;
+                const hasValidTime = exam.time !== "NAN" && exam.time !== "TBA" && exam.time !== null && /^\d{2}:\d{2}$/.test(exam.time);
+                
+                return {
+                    ...exam,
+                    // Ajouter les infos de l'UE
+                    ue: this.ues[exam.ue_id]?.fullName || exam.ue_id,
+                    code: this.ues[exam.ue_id]?.code || exam.ue_id,
+                    ue_name: this.ues[exam.ue_id]?.name || exam.ue_id,
+                    hasValidDate,
+                    hasValidTime,
+                    datetime: this.createDatetime(exam.date, exam.time, hasValidDate, hasValidTime)
+                };
+            });
+            
+            // Séparer les examens avec et sans dates (date seule suffit pour "confirmés")
             this.validExams = this.exams.filter(exam => exam.hasValidDate);
             this.pendingExams = this.exams.filter(exam => !exam.hasValidDate);
             
@@ -52,14 +63,53 @@ class ExamManager {
 
     // Pas besoin de sauvegarder en statique
 
-    createDatetime(date, time) {
-        if (date === "NAN" || date === "TBA" || time === "NAN" || time === "TBA") {
+    createDatetime(date, time, hasValidDate, hasValidTime) {
+        if (!hasValidDate || !hasValidTime) {
             return null;
         }
         // Éviter les problèmes de fuseau horaire en créant la date directement
         const [year, month, day] = date.split('-').map(Number);
         const [hours, minutes] = time.split(':').map(Number);
         return new Date(year, month - 1, day, hours, minutes);
+    }
+
+    formatDuration(duration) {
+        if (duration === "NAN" || duration === null || duration === undefined) {
+            return "Non précisée";
+        }
+        
+        // Si c'est déjà une string avec "minutes", on la retourne telle quelle
+        if (typeof duration === 'string' && duration.includes('minute')) {
+            return duration;
+        }
+        
+        // Si c'est un nombre ou une string numérique simple
+        if (!isNaN(Number(duration)) && duration !== "") {
+            return `${duration} minutes`;
+        }
+        
+        // Pour les cas comme "10 ou 15", on retourne tel quel avec "minutes"
+        return `${duration} minutes`;
+    }
+
+    updateLastModifiedDate(dateString) {
+        const lastUpdateElement = document.getElementById('lastUpdateDate');
+        if (lastUpdateElement && dateString) {
+            try {
+                const date = new Date(dateString);
+                const options = { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                lastUpdateElement.textContent = date.toLocaleDateString('fr-FR', options);
+            } catch (error) {
+                console.error('Erreur lors du formatage de la date:', error);
+                lastUpdateElement.textContent = dateString;
+            }
+        }
     }
 
     // Prochains examens SANS filtre (pour le compteur principal)
@@ -158,7 +208,7 @@ class ExamManager {
                 <p><strong>Type:</strong> ${nextExam.type}</p>
                 <p><strong>Date:</strong> ${this.formatDate(nextExam.datetime)}</p>
                 <p><strong>Heure:</strong> ${this.formatTime(nextExam.datetime)}</p>
-                <p><strong>Durée:</strong> ${nextExam.duration !== "NAN" ? nextExam.duration + " min" : "Non précisée"}</p>
+                <p><strong>Durée:</strong> ${this.formatDuration(nextExam.duration)}</p>
                 <p><strong>Lieu:</strong> ${nextExam.location !== "NAN" ? nextExam.location : "À définir"}</p>
                 <div style="text-align: center; margin-top: 10px;  font-size: 0.9rem;">
                     👆 Cliquer pour plus de détails
@@ -202,57 +252,140 @@ class ExamManager {
             return;
         }
 
-        const upcomingHtml = upcoming.length > 0 ? `
-            <div style="margin-bottom: ${filteredPendingExams.length > 0 ? '20px' : '0'};">
-                ${upcoming.length > 0 && filteredPendingExams.length > 0 ? '<h3 style="color: var(--text); text-align: center; margin-bottom: 20px;">📅 Examens confirmés</h3>' : ''}
-                ${upcoming.map(exam => {
-                    const timeLeft = this.getTimeLeft(exam.datetime);
-                    const daysLeft = Math.ceil((exam.datetime - new Date()) / (1000 * 60 * 60 * 24));
-                    
-                    let examClass = 'exam-item';
-                    if (daysLeft <= 1) examClass += ' urgent';
-                    else if (daysLeft <= 3) examClass += ' today';
-
-                    return `
-                        <div class="${examClass}" onclick="examManager.showExamDetails(${exam.id})" style="cursor: pointer;">
-                            <div class="exam-type type-${exam.type.toLowerCase()}">${exam.type}</div>
-                            <h3>${exam.name || exam.ue}</h3>
-                            <h4 style="margin: 5px 0; color: var(--text-light); font-size: 0.9rem;">${exam.ue} ${exam.code !== "NAN" ? `(${exam.code})` : ''}</h4>
-                            <p><strong>📅</strong> ${this.formatDate(exam.datetime)} à ${this.formatTime(exam.datetime)}</p>
-                            <p><strong>📍</strong> ${exam.location !== "NAN" ? exam.location : "Lieu à définir"}</p>
-                            <p><strong>⏱️</strong> ${exam.duration !== "NAN" ? exam.duration + " minutes" : "Durée non précisée"}</p>
-                            ${exam.coefficient !== "NAN" ? `<p><strong>💯</strong> ${exam.coefficient}</p>` : ''}
-                            <div class="exam-countdown" data-datetime="${exam.datetime.toISOString()}">${timeLeft}</div>
-                            <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
-                                 Cliquer pour plus de détails
-                            </div>
+        let html = '';
+        
+        // Grouper les examens confirmés par mois
+        if (upcoming.length > 0) {
+            const groupedByMonth = this.groupExamsByMonth(upcoming);
+            const currentDate = new Date();
+            
+            // Séparer les examens passés et futurs
+            const futureMonths = [];
+            const pastMonths = [];
+            
+            Object.entries(groupedByMonth).forEach(([monthKey, exams]) => {
+                const [year, month] = monthKey.split('-').map(Number);
+                const monthDate = new Date(year, month - 1, 1);
+                
+                if (monthDate >= new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)) {
+                    futureMonths.push([monthKey, exams]);
+                } else {
+                    pastMonths.push([monthKey, exams]);
+                }
+            });
+            
+            // Afficher les mois futurs
+            futureMonths.forEach(([monthKey, exams]) => {
+                html += this.renderMonthSection(monthKey, exams, false);
+            });
+            
+            // Afficher les mois passés dans une section repliée
+            if (pastMonths.length > 0) {
+                html += `
+                    <div class="collapsed-section">
+                        <div class="collapsed-header" onclick="this.parentElement.classList.toggle('expanded')">
+                            <span>📂 Examens passés (${pastMonths.reduce((acc, [, exams]) => acc + exams.length, 0)})</span>
+                            <span class="collapse-icon">▼</span>
                         </div>
-                    `;
-                }).join('')}
-            </div>
-        ` : '';
-
-        const pendingHtml = filteredPendingExams.length > 0 ? `
-            <div style="margin-top: ${upcoming.length > 0 ? '20px' : '0'};">
-                <h3 style="color: var(--text-light); text-align: center; margin-bottom: 20px;">📋 Examens sans date confirmée</h3>
-                ${filteredPendingExams.map(exam => `
-                    <div class="exam-item" onclick="examManager.showExamDetails(${exam.id})" style="cursor: pointer; opacity: 0.7; border-left-color: var(--text-light);">
-                        <div class="exam-type type-${exam.type.toLowerCase()}">${exam.type}</div>
-                        <h3>${exam.name || exam.ue}</h3>
-                        <h4 style="margin: 5px 0; color: var(--text-light); font-size: 0.9rem;">${exam.ue} ${exam.code !== "NAN" ? `(${exam.code})` : ''}</h4>
-                        <p><strong>📅</strong> Date non confirmée</p>
-                        <p><strong>📍</strong> ${exam.location !== "NAN" ? exam.location : "Lieu à définir"}</p>
-                        ${exam.coefficient !== "NAN" ? `<p><strong>💯</strong> ${exam.coefficient}</p>` : ''}
-                        ${exam.status === "to_confirm" ? '<p style="color: var(--warning);">⚠️ À confirmer</p>' : ''}
-                        <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
-                             Cliquer pour plus de détails
+                        <div class="collapsed-content">
+                `;
+                pastMonths.forEach(([monthKey, exams]) => {
+                    html += this.renderMonthSection(monthKey, exams, true);
+                });
+                html += `
                         </div>
                     </div>
-                `).join('')}
-            </div>
-        ` : '';
+                `;
+            }
+        }
+        
+        // Examens sans date confirmée
+        if (filteredPendingExams.length > 0) {
+            html += `
+                <div class="month-section">
+                    <h3 class="month-title pending">📋 Examens sans date confirmée</h3>
+                    <div class="month-exams">
+                        ${filteredPendingExams.map(exam => this.renderExamItem(exam, true)).join('')}
+                    </div>
+                </div>
+            `;
+        }
 
-        container.innerHTML = upcomingHtml + pendingHtml;
+        container.innerHTML = html;
+    }
+
+    groupExamsByMonth(exams) {
+        const grouped = {};
+        exams.forEach(exam => {
+            if (exam.datetime) {
+                const monthKey = `${exam.datetime.getFullYear()}-${String(exam.datetime.getMonth() + 1).padStart(2, '0')}`;
+                if (!grouped[monthKey]) {
+                    grouped[monthKey] = [];
+                }
+                grouped[monthKey].push(exam);
+            }
+        });
+        
+        // Trier les examens dans chaque mois par date
+        Object.keys(grouped).forEach(month => {
+            grouped[month].sort((a, b) => a.datetime - b.datetime);
+        });
+        
+        return grouped;
+    }
+
+    renderMonthSection(monthKey, exams, isPast = false) {
+        const [year, month] = monthKey.split('-').map(Number);
+        const monthName = new Date(year, month - 1, 1).toLocaleDateString('fr-FR', { 
+            month: 'long', 
+            year: 'numeric' 
+        });
+        
+        return `
+            <div class="month-section ${isPast ? 'past' : ''}">
+                <h3 class="month-title">${monthName.charAt(0).toUpperCase() + monthName.slice(1)}</h3>
+                <div class="month-exams">
+                    ${exams.map(exam => this.renderExamItem(exam, false)).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    renderExamItem(exam, isPending = false) {
+        let timeLeft = '';
+        let examClass = 'exam-item';
+        
+        if (exam.datetime && !isPending) {
+            timeLeft = this.getTimeLeft(exam.datetime);
+            const daysLeft = Math.ceil((exam.datetime - new Date()) / (1000 * 60 * 60 * 24));
+            
+            if (daysLeft <= 1) examClass += ' urgent';
+            else if (daysLeft <= 3) examClass += ' today';
+        }
+        
+        if (isPending) {
+            examClass += ' pending';
+        }
+
+        return `
+            <div class="${examClass}" onclick="examManager.showExamDetails(${exam.id})" style="cursor: pointer;">
+                <div class="exam-type type-${exam.type.toLowerCase()}">${exam.type}</div>
+                <h3>${exam.name || exam.ue}</h3>
+                <h4 style="margin: 5px 0; color: var(--text-light); font-size: 0.9rem;">${exam.ue} ${exam.code !== "NAN" ? `(${exam.code})` : ''}</h4>
+                ${exam.datetime && !isPending ? 
+                    `<p><strong>📅</strong> ${this.formatDate(exam.datetime)} à ${this.formatTime(exam.datetime)}</p>` :
+                    `<p><strong>📅</strong> Date non confirmée</p>`
+                }
+                <p><strong>📍</strong> ${exam.location !== "NAN" ? exam.location : "Lieu à définir"}</p>
+                <p><strong>⏱️</strong> ${this.formatDuration(exam.duration)}</p>
+                ${exam.coefficient !== "NAN" ? `<p><strong>💯</strong> ${exam.coefficient}</p>` : ''}
+                ${exam.status === "to_confirm" ? '<p style="color: var(--warning);">⚠️ À confirmer</p>' : ''}
+                ${timeLeft ? `<div class="exam-countdown" data-datetime="${exam.datetime.toISOString()}">${timeLeft}</div>` : ''}
+                <div style="text-align: center; margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
+                     Cliquer pour plus de détails
+                </div>
+            </div>
+        `;
     }
 
     showExamDetails(examId) {
@@ -310,17 +443,33 @@ class ExamManager {
                     <div class="info-icon">📅</div>
                     <div class="info-content">
                         <div class="info-label">Date</div>
-                        <div class="info-value">${this.formatDate(exam.datetime)}</div>
-                    </div>
-                </div>
-                <div class="info-item">
-                    <div class="info-icon">🕐</div>
-                    <div class="info-content">
-                        <div class="info-label">Heure</div>
-                        <div class="info-value">${this.formatTime(exam.datetime)}</div>
+                        <div class="info-value">${exam.datetime ? this.formatDate(exam.datetime) : exam.date}</div>
                     </div>
                 </div>
             `);
+            
+            // Heure séparée - gestion des heures non-standard
+            if (exam.hasValidTime) {
+                infoItems.push(`
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+                        <div class="info-content">
+                            <div class="info-label">Heure</div>
+                            <div class="info-value">${this.formatTime(exam.datetime)}</div>
+                        </div>
+                    </div>
+                `);
+            } else if (exam.time !== "NAN" && exam.time !== "TBA") {
+                infoItems.push(`
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+                        <div class="info-content">
+                            <div class="info-label">Heure</div>
+                            <div class="info-value">${exam.time}</div>
+                        </div>
+                    </div>
+                `);
+            }
         } else {
             infoItems.push(`
                 <div class="info-item">
@@ -340,7 +489,7 @@ class ExamManager {
                     <div class="info-icon">⏱️</div>
                     <div class="info-content">
                         <div class="info-label">Durée</div>
-                        <div class="info-value">${exam.duration} minutes</div>
+                        <div class="info-value">${this.formatDuration(exam.duration)}</div>
                     </div>
                 </div>
             `);
@@ -398,9 +547,9 @@ class ExamManager {
         
         modalInfo.innerHTML = infoItems.join('');
 
-        // Gérer le countdown selon la disponibilité de la date
+        // Gérer le countdown selon la disponibilité de datetime complet
         const countdownDisplay = document.getElementById('modalCountdown');
-        if (exam.hasValidDate) {
+        if (exam.datetime) {
             countdownDisplay.style.display = 'block';
             const updateModalCountdown = () => {
                 const timeLeft = this.getTimeLeft(exam.datetime);

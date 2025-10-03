@@ -721,6 +721,80 @@ body {
     font-weight: bold;
 }
 
+/* Sections mensuelles */
+.month-section {
+    margin-bottom: 30px;
+}
+
+.month-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--text);
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.month-title.pending {
+    background: linear-gradient(135deg, var(--text-light) 0%, #9ca3af 100%);
+}
+
+.month-exams {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.exam-item.pending {
+    opacity: 0.7;
+    border-left-color: var(--text-light);
+}
+
+/* Section repliée pour examens passés */
+.collapsed-section {
+    margin-top: 30px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.collapsed-header {
+    background: var(--card-bg);
+    padding: 15px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: var(--text-light);
+    transition: all 0.3s ease;
+}
+
+.collapsed-header:hover {
+    background: var(--hover-bg);
+}
+
+.collapse-icon {
+    transition: transform 0.3s ease;
+}
+
+.collapsed-section.expanded .collapse-icon {
+    transform: rotate(180deg);
+}
+
+.collapsed-content {
+    display: none;
+    padding: 20px;
+    background: var(--bg);
+}
+
+.collapsed-section.expanded .collapsed-content {
+    display: block;
+}
+
 .countdown-display {
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
     color: white;
