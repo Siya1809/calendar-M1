@@ -48,7 +48,13 @@
             "name": "BD NoSQL",
             "fullName": "M1if24 - BD NoSQL",
             "Link": "https://forge.univ-lyon1.fr/mif24-bdnosql/mif24-bdnosql"
-        }
+        },
+        "M1if11": {
+            "code": "M1if11",
+            "name": "Ouverture à la recherche",
+            "fullName": "M1if11 - Ouverture à la recherche",
+            "Link": "http://sylvain.brandel.pages.univ-lyon1.fr/ouverture/"
+    }
     },
     "examens": [
         {
@@ -72,9 +78,9 @@
             "name": "QCM",
             "date": "2025-10-14",
             "time": "14:00",
-            "duration": "NAN",
+            "duration": 10,
             "location": "Amphi Thémis 10",
-            "description": "QCM en amphithéâtre",
+            "description": "Au programme : l'introduction, le cours sur l'outillage, les design patterns (tout ce qui a été vu en CM, TD et TP).",
             "coefficient": "10%",
             "documents": "Aucun document autorisé",
             "status": "confirmed"
@@ -306,16 +312,16 @@
         {
             "id": 19,
             "ue_id": "M1if07",
-            "type": "CC1 (à confirmer)",
+            "type": "CC",
             "name": "Test TD 1",
             "date": "2025-10-16",
-            "time": "NAN",
-            "duration": 20,
-            "location": "NAN",
-            "description": "Premier test de 20mn en TD",
+            "time": "09:45",
+            "duration": "dizaine de minutes",
+            "location": "TD001",
+            "description": "Un test d'une dizaine de minutes aura lieu au début du prochain TD. Le programme de ce test couvre toutes les notions vues en septembre",
             "coefficient": "10%",
-            "documents": "NAN",
-            "status": "date_missing"
+            "documents": "les documents, calculatrices et dictionnaires sont autorisés.",
+            "status": "confirmed"
         },
         {
             "id": 20,
@@ -398,6 +404,47 @@
             "location": "En ligne",
             "description": "Rendu du TP Projet",
             "coefficient": "NAN",
+            "documents": "NAN",
+            "status": "confirmed"
+        },
+        {
+            "id": 26,
+            "ue_id": "M1if11",
+            "type": "Rendu",
+            "name": "Cahier des charges",
+            "date": "2025-11-09",
+            "time": "23:59",
+            "duration": "NAN",
+            "location": "Voir TOMUSS",
+            "description": "Rédaction en interaction avec vos encadrants\n4 pages maximum tout compris, exemple 1, exemple 2\nFichier au format .pdf intitulé cdc_IDgrp_nom1_numetudiant1_nom2_numetudiant2.pdf où IDgrp est votre numéro de groupe apparaissant sur Tomuss\nÀ déposer sur Tomuss, dans l’UE UE-INF1097M Projet Pour l’Orientation en Master",
+            "coefficient": "prise en compte dans la note finale de l'UE si besoin",
+            "documents": "NAN",
+            "status": "confirmed"
+        },
+        {
+            "id": 27,
+            "ue_id": "M1if11",
+            "type": "Rendu",
+            "name": "Rapport final",
+            "date": "2026-02-15",
+            "time": "23:59",
+            "duration": "NAN",
+            "location": "Voir TOMUSS",
+            "description": "projet transversal de master inforamtique (Mif10) commencera la semaine du 16 février 2026\nUn rapport par groupe\n10 pages maximum (pas de page de garde, pas de plan), annexes autorisées ne comptant pas dans les 10 pages, marges de 2cm, police Calibri (ou équivalente) 11pt, modèle à respecter mais des adaptations sont possibles (Latex, etc.), exemple1, exemple2\nFichier au format .pdf intitulé rapport_IDgrp_nom1_numetudiant1_nom2_numetudiant2.pdf où IDgrp est votre numéro d groupe apparaissant sur Tomuss,\nÀ déposer sur Tomuss, dans l’UE UE-INF1208M Ouverture à la recherche",
+            "documents": "NAN",
+            "status": "confirmed"
+        },
+        {
+            "id": 28,
+            "ue_id": "M1if11",
+            "type": "Rendu",
+            "name": "Rapport final",
+            "date": "2026-02-15",
+            "time": "23:59",
+            "duration": "3",
+            "location": "Voir TOMUSS",
+            "description": "Fichier intitulé video_IDgrp_nom1_numetudiant1_nom2_numetudiant.format avec format lisible au moins avec VLC\nLa vidéo doit permettre à quelqu’un qui n’est pas du domaine de comprendre votre travail",
+            "coefficient": "prise en compte dans la note finale de l'UE si besoin",
             "documents": "NAN",
             "status": "confirmed"
         }
