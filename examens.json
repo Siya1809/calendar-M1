@@ -7,8 +7,14 @@
             "fullName": "M1if01 - Génie Logiciel",
             "Link": "https://forge.univ-lyon1.fr/matthieu.moy/mif01"
         },
+        "M1if02": {
+            "code": "M1if02",
+            "name": "Informatique graphique",
+            "fullName": "M1if02 - Informatique graphique",
+            "Link": "https://perso.liris.cnrs.fr/eric.galin/M1/"
+        },
         "M1if03": {
-            "code": "M1if03", 
+            "code": "M1if03",
             "name": "Conception d'applications Web",
             "fullName": "M1if03 - Conception d'applications Web",
             "Link": "https://perso.univ-lyon1.fr/lionel.medini/enseignement/#md=M1IF03/index"
@@ -37,6 +43,12 @@
             "fullName": "M1if07 - Algorithmique pour l'optimisation",
             "Link": "https://perso.liris.cnrs.fr/tpierron/RO2025/index.html"
         },
+        "M1if11": {
+            "code": "M1if11",
+            "name": "Ouverture à la recherche",
+            "fullName": "M1if11 - Ouverture à la recherche",
+            "Link": "http://sylvain.brandel.pages.univ-lyon1.fr/ouverture/"
+        },
         "M1if23": {
             "code": "M1if23",
             "name": "Programmation Avancée",
@@ -48,13 +60,7 @@
             "name": "BD NoSQL",
             "fullName": "M1if24 - BD NoSQL",
             "Link": "https://forge.univ-lyon1.fr/mif24-bdnosql/mif24-bdnosql"
-        },
-        "M1if11": {
-            "code": "M1if11",
-            "name": "Ouverture à la recherche",
-            "fullName": "M1if11 - Ouverture à la recherche",
-            "Link": "http://sylvain.brandel.pages.univ-lyon1.fr/ouverture/"
-    }
+        }
     },
     "examens": [
         {

@@ -9,6 +9,76 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Menu hamburger -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <span class="hamburger"></span>
+        <span class="hamburger"></span>
+        <span class="hamburger"></span>
+    </button>
+
+    <!-- Menu latéral -->
+    <nav class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <h3>Menu</h3>
+            <button class="menu-close" id="menuClose">×</button>
+        </div>
+        
+        <div class="menu-content">
+            <!-- Navigation rapide -->
+            <div class="menu-section">
+                <h4>🎯 Navigation</h4>
+                <button class="menu-item" data-action="scrollToNext">
+                    <span class="menu-icon">⏰</span>
+                    <span class="menu-text">Prochain examen</span>
+                </button>
+                <button class="menu-item" data-action="scrollToList">
+                    <span class="menu-icon">📋</span>
+                    <span class="menu-text">Liste des examens</span>
+                </button>
+                <button class="menu-item" data-action="scrollToCalendar">
+                    <span class="menu-icon">📅</span>
+                    <span class="menu-text">Vue calendrier</span>
+                </button>
+            </div>
+
+            <!-- Accès rapide aux cours -->
+            <div class="menu-section">
+                <h4>🌐 Liens des cours</h4>
+                <div id="menuQuickLinks" class="menu-links">
+                    <div class="menu-loading">Chargement...</div>
+                </div>
+            </div>
+
+            <!-- Filtres -->
+            <div class="menu-section">
+                <h4>🎯 Filtrer par UE</h4>
+                <select id="menuUeFilter" class="menu-select">
+                    <option value="">Toutes les UE</option>
+                </select>
+            </div>
+
+            <!-- Actions -->
+            <div class="menu-section">
+                <h4>⚡ Actions rapides</h4>
+                <button class="menu-item" data-action="toggleView">
+                    <span class="menu-icon">🔄</span>
+                    <span class="menu-text">Changer de vue</span>
+                </button>
+                <button class="menu-item" data-action="resetFilter">
+                    <span class="menu-icon">🔍</span>
+                    <span class="menu-text">Réinitialiser les filtres</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="menu-footer">
+            <p>📝 Développé par <strong>Siyaman Mohamad</strong></p>
+        </div>
+    </nav>
+
+    <!-- Overlay pour fermer le menu -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
     <div class="container">
         <!-- Header -->
         <div class="header">

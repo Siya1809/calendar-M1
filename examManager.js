@@ -43,6 +43,7 @@ class ExamManager {
             this.validExams = this.exams.filter(exam => exam.hasValidDate);
             this.pendingExams = this.exams.filter(exam => !exam.hasValidDate);
             
+            this.populateMenuLinks();
             this.updateDisplays();
             this.startTimers();
         } catch (error) {
@@ -110,6 +111,31 @@ class ExamManager {
                 lastUpdateElement.textContent = dateString;
             }
         }
+    }
+
+    populateMenuLinks() {
+        const container = document.getElementById('menuQuickLinks');
+        if (!container || !this.ues) return;
+
+        const uesWithLinks = Object.entries(this.ues).filter(([, ue]) => ue.Link);
+        
+        if (uesWithLinks.length === 0) {
+            container.innerHTML = '<div class="menu-loading">Aucun lien disponible</div>';
+            return;
+        }
+
+        const linksHtml = uesWithLinks.map(([ueId, ue]) => `
+            <a href="${ue.Link}" target="_blank" class="menu-link" title="Accéder au cours ${ue.fullName}">
+                <span class="menu-link-icon">📚</span>
+                <div class="menu-link-text">
+                    <span class="menu-link-code">${ue.code}</span>
+                    <span class="menu-link-name">${ue.name}</span>
+                </div>
+                <span class="menu-link-arrow">↗</span>
+            </a>
+        `).join('');
+
+        container.innerHTML = linksHtml;
     }
 
     // Prochains examens SANS filtre (pour le compteur principal)
