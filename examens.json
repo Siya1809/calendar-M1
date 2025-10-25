@@ -124,7 +124,7 @@
             "ue_id": "M1if05",
             "type": "CC",
             "name": "Contrôle 4",
-            "date": "2025-11-08",
+            "date": "2025-12-08",
             "time": "09:45",
             "duration": "10 ou 15",
             "location": "Salles Nautibus TD",
@@ -452,6 +452,20 @@
             "description": "Fichier intitulé video_IDgrp_nom1_numetudiant1_nom2_numetudiant.format avec format lisible au moins avec VLC\nLa vidéo doit permettre à quelqu’un qui n’est pas du domaine de comprendre votre travail",
             "coefficient": "prise en compte dans la note finale de l'UE si besoin",
             "documents": "NAN",
+            "status": "confirmed"
+        },
+        {
+            "id": 29,
+            "ue_id": "M1if05",
+            "type": "TPN",
+            "name": "Projet Reseau - Contrôle 3",
+            "date": "2025-11-03",
+            "time": "12:40",
+            "duration": "15",
+            "location": "Salles Nautibus",
+            "description": "Ne pas oublier de faire le projet réseau avant le tp3.",
+            "coefficient": "14%",
+            "documents": "Aucun document autorisé",
             "status": "confirmed"
         }
     ]
