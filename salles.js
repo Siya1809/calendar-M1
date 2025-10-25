@@ -406,6 +406,18 @@ class SallesManager {
         document.getElementById('roomTitle').textContent = `📅 ${roomName}`;
         document.getElementById('calendarCard').style.display = 'block';
         
+        // Gérer le bouton ADE
+        const adeButton = document.getElementById('adeButton');
+        const adeLink = this.getAdeLink(roomName);
+        const isTPR = roomName.toUpperCase().includes('TPR');
+        
+        if (!isTPR && adeLink) {
+            adeButton.href = adeLink;
+            adeButton.style.display = 'inline-flex';
+        } else {
+            adeButton.style.display = 'none';
+        }
+        
         this.displayDayCalendar();
         
         // Scroll vers le calendrier

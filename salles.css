@@ -121,6 +121,41 @@ body {
     font-size: 1.5rem;
 }
 
+/* En-tête calendrier avec bouton ADE */
+.calendar-header-with-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.calendar-header-with-link h2 {
+    margin: 0;
+}
+
+.ade-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.ade-button:hover {
+    background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
 /* Section collapsible - Salles disponibles */
 .collapsible-header {
     display: flex;
@@ -644,6 +679,20 @@ option {
 
     .header h1 {
         font-size: 1.5rem;
+    }
+
+    /* En-tête calendrier responsive */
+    .calendar-header-with-link {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .ade-button {
+        font-size: 0.85rem;
+        padding: 8px 16px;
+        width: 100%;
+        justify-content: center;
     }
 
     /* Avertissement responsive */
