@@ -7,6 +7,43 @@ class SallesManager {
         this.selectedRoom = null;
         this.currentDay = new Date();
         this.timeMode = 'now'; // 'now' ou 'custom'
+        
+        // Mapping des salles vers leurs IDs ADE (sauf TPR)
+        this.roomAdeIds = {
+            // C
+            'C002': '9507',
+            'C003': '9509',
+            'C004': '9508',
+            'C006': '9510',
+            'C008': '9511',
+            // TD
+            'TD001': '8718',
+            'TD005': '9513',
+            'TD007': '9514',
+            'TD009': '8055',
+            'TD116': '9516',
+            'TD120': '25450',
+            'TD124': '9517',
+            'TD126': '9519',
+            'TD128': '9520',
+            'TD130': '9521',
+            // TP
+            'TP101': '9512',
+            'TP103': '9522',
+            'TP105': '9523',
+            'TP107': '9524',
+            'TP108': '9529',
+            'TP109': '9525',
+            'TP110': '9530',
+            'TP112': '9531',
+            'TP114': '9532',
+            'TP115': '9526',
+            'TP117': '9527',
+            'TP119': '9528',
+            'TP121': '36267',
+            'TP123': '6661'
+        };
+        
         this.init();
     }
 
@@ -266,6 +303,9 @@ class SallesManager {
                         `jusqu'à ${this.formatTime(nextEvent.start)}` : 
                         `toute la journée`;
                     
+                    const adeLink = this.getAdeLink(room);
+                    const isTPR = room.toUpperCase().includes('TPR');
+                    
                     return `
                     <div class="available-room-row" onclick="sallesManager.selectRoom('${room}', true)">
                         <div class="room-row-icon">${this.getRoomIcon(room)}</div>
@@ -277,6 +317,11 @@ class SallesManager {
                             <span class="status-badge">✅ Disponible</span>
                             <span class="status-duration">${nextEventText}</span>
                         </div>
+                        ${!isTPR && adeLink ? `
+                            <a href="${adeLink}" target="_blank" class="ade-link" onclick="event.stopPropagation()" title="Voir sur ADE">
+                                🔗
+                            </a>
+                        ` : ''}
                     </div>
                 `}).join('')}
             </div>
@@ -331,6 +376,13 @@ class SallesManager {
         if (roomUpper.startsWith('C')) return '📚';
         if (roomUpper.includes('AMPHI')) return '🎭';
         return '🚪';
+    }
+
+    getAdeLink(room) {
+        const adeId = this.roomAdeIds[room];
+        if (!adeId) return null;
+        
+        return `https://edt.univ-lyon1.fr/direct/index.jsp?projectId=1&ShowPianoWeeks=true&displayConfName=DOUA_CHBIO&showTree=false&resources=${adeId}&days=0,1,2,3,4`;
     }
 
     selectRoom(roomName, useCustomDate = false) {
