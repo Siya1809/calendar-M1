@@ -101,17 +101,23 @@
             </div>
         </div>
 
+        <!-- Voir les salles disponibles -->
+        <div class="card rooms-card">
+            <div class="rooms-card-content">
+                <div class="rooms-card-icon">🚪</div>
+                <div class="rooms-card-text">
+                    <h3>Salles Nautibus</h3>
+                    <p>Consulte les disponibilités en temps réel</p>
+                </div>
+                <a href="salles.html" class="rooms-card-btn">
+                    Voir les salles →
+                </a>
+            </div>
+        </div>
+
         <!-- Filtres et vue -->
         <div class="card">
             <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
-                <!-- Filtre par UE -->
-                <div class="filter-section">
-                    <label for="ueFilter" style="font-weight: 600; margin-right: 10px;">🎯 Filtrer par UE:</label>
-                    <select id="ueFilter" style="padding: 8px 12px; border-radius: 8px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.9rem;">
-                        <option value="">Toutes les UE</option>
-                    </select>
-                </div>
-                
                 <!-- Sélecteur de vue -->
                 <div class="view-selector">
                     <button class="view-btn active" id="listViewBtn">📋 Liste</button>
@@ -122,7 +128,16 @@
 
         <!-- Vue Liste -->
         <div class="card" id="listView">
-            <h2>📋 Tous les examens</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+                <h2 style="margin: 0;">📋 Tous les examens</h2>
+                <!-- Filtre par UE -->
+                <div class="filter-section" style="margin: 0;">
+                    <label for="ueFilter" style="font-weight: 600; margin-right: 10px;">🎯 Filtrer par UE:</label>
+                    <select id="ueFilter" style="padding: 8px 12px; border-radius: 8px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.9rem;">
+                        <option value="">Toutes les UE</option>
+                    </select>
+                </div>
+            </div>
             <div id="examsList">
                 <!-- Les examens seront affichés ici -->
             </div>

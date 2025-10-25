@@ -5,7 +5,7 @@ class SallesManager {
         this.roomsInfo = new Map(); // Map<roomName, {floor: string}>
         this.allRooms = [];
         this.selectedRoom = null;
-        this.currentWeekStart = new Date();
+        this.currentDay = new Date();
         this.timeMode = 'now'; // 'now' ou 'custom'
         this.init();
     }
@@ -226,8 +226,14 @@ class SallesManager {
             );
             
             if (!isOccupied) {
-                // Trouver le prochain cours
-                const nextEvent = events.find(e => e.start > checkTime);
+                // Trouver le prochain cours DANS LA MÊME JOURNÉE
+                const endOfDay = new Date(checkTime);
+                endOfDay.setHours(23, 59, 59, 999);
+                
+                const nextEvent = events.find(e => 
+                    e.start > checkTime && e.start <= endOfDay
+                );
+                
                 const roomInfo = this.roomsInfo.get(room);
                 availableRooms.push({ room, nextEvent, floor: roomInfo?.floor });
             }
@@ -254,18 +260,25 @@ class SallesManager {
                 <div class="count-label">salle${availableRooms.length > 1 ? 's' : ''} disponible${availableRooms.length > 1 ? 's' : ''}</div>
                 <div class="count-time">${timeLabel}</div>
             </div>
-            <div class="available-grid">
-                ${availableRooms.map(({ room, nextEvent, floor }) => `
-                    <div class="available-room-card" onclick="sallesManager.selectRoom('${room}')">
-                        <div class="available-room-icon">${this.getRoomIcon(room)}</div>
-                        <div class="available-room-name">${room}</div>
-                        <div class="available-room-floor">${floor || ''}</div>
-                        ${nextEvent ? 
-                            `<div class="available-room-next">Libre jusqu'à ${this.formatTime(nextEvent.start)}</div>` :
-                            `<div class="available-room-next available-all-day">Libre toute la journée</div>`
-                        }
+            <div class="available-list">
+                ${availableRooms.map(({ room, nextEvent, floor }) => {
+                    const nextEventText = nextEvent ? 
+                        `jusqu'à ${this.formatTime(nextEvent.start)}` : 
+                        `toute la journée`;
+                    
+                    return `
+                    <div class="available-room-row" onclick="sallesManager.selectRoom('${room}', true)">
+                        <div class="room-row-icon">${this.getRoomIcon(room)}</div>
+                        <div class="room-row-info">
+                            <div class="room-row-name">${room}</div>
+                            <div class="room-row-floor">${floor || ''}</div>
+                        </div>
+                        <div class="room-row-status">
+                            <span class="status-badge">✅ Disponible</span>
+                            <span class="status-duration">${nextEventText}</span>
+                        </div>
                     </div>
-                `).join('')}
+                `}).join('')}
             </div>
         `;
     }
@@ -320,14 +333,28 @@ class SallesManager {
         return '🚪';
     }
 
-    selectRoom(roomName) {
+    selectRoom(roomName, useCustomDate = false) {
         this.selectedRoom = roomName;
-        this.currentWeekStart = this.getMonday(new Date());
+        
+        // Si on vient des salles disponibles, utiliser la date de recherche
+        if (useCustomDate && this.timeMode === 'custom') {
+            const dateInput = document.getElementById('customDate').value;
+            if (dateInput) {
+                this.currentDay = new Date(dateInput);
+                this.currentDay.setHours(0, 0, 0, 0);
+            } else {
+                this.currentDay = new Date();
+                this.currentDay.setHours(0, 0, 0, 0);
+            }
+        } else {
+            this.currentDay = new Date();
+            this.currentDay.setHours(0, 0, 0, 0);
+        }
         
         document.getElementById('roomTitle').textContent = `📅 ${roomName}`;
         document.getElementById('calendarCard').style.display = 'block';
         
-        this.displayWeekCalendar();
+        this.displayDayCalendar();
         
         // Scroll vers le calendrier
         document.getElementById('calendarCard').scrollIntoView({ 
@@ -336,75 +363,74 @@ class SallesManager {
         });
     }
 
-    getMonday(date) {
-        const d = new Date(date);
-        const day = d.getDay();
-        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-        d.setDate(diff);
-        d.setHours(0, 0, 0, 0);
-        return d;
-    }
-
-    displayWeekCalendar() {
+    displayDayCalendar() {
         const events = this.roomsMap.get(this.selectedRoom) || [];
-        const weekEnd = new Date(this.currentWeekStart);
-        weekEnd.setDate(weekEnd.getDate() + 7);
+        const dayEnd = new Date(this.currentDay);
+        dayEnd.setDate(dayEnd.getDate() + 1);
 
-        // Filtrer les événements de la semaine
-        const weekEvents = events.filter(e => 
-            e.start >= this.currentWeekStart && e.start < weekEnd
-        );
+        // Filtrer les événements du jour
+        const dayEvents = events.filter(e => 
+            e.start >= this.currentDay && e.start < dayEnd
+        ).sort((a, b) => a.start - b.start);
 
-        // Afficher la période
-        document.getElementById('weekDisplay').textContent = 
-            `${this.formatDateShort(this.currentWeekStart)} - ${this.formatDateShort(new Date(weekEnd.getTime() - 86400000))}`;
+        // Afficher la date
+        const isToday = this.currentDay.toDateString() === new Date().toDateString();
+        document.getElementById('dayDisplay').textContent = isToday 
+            ? `Aujourd'hui • ${this.formatDateLong(this.currentDay)}`
+            : this.formatDateLong(this.currentDay);
 
-        // Générer le calendrier
-        const calendarView = document.getElementById('calendarView');
-        let html = '';
-
-        for (let i = 0; i < 7; i++) {
-            const currentDay = new Date(this.currentWeekStart);
-            currentDay.setDate(currentDay.getDate() + i);
-            
-            const dayEvents = weekEvents.filter(e => 
-                e.start.toDateString() === currentDay.toDateString()
-            );
-
-            const isToday = currentDay.toDateString() === new Date().toDateString();
-
-            html += `
-                <div class="day-column ${isToday ? 'today' : ''}">
-                    <div class="day-header">
-                        <div class="day-name">${this.getDayName(currentDay)}</div>
-                        <div class="day-date">${currentDay.getDate()}/${currentDay.getMonth() + 1}</div>
-                    </div>
-                    <div class="day-events">
-                        ${dayEvents.length === 0 ? 
-                            '<div class="no-event">Aucun cours</div>' :
-                            dayEvents.map(event => this.renderEvent(event)).join('')
-                        }
-                    </div>
+        // Générer la vue
+        const dayView = document.getElementById('dayView');
+        
+        if (dayEvents.length === 0) {
+            dayView.innerHTML = `
+                <div class="empty-day">
+                    <div class="empty-icon">📭</div>
+                    <p>Aucun cours prévu ce jour</p>
                 </div>
             `;
+            return;
         }
 
-        calendarView.innerHTML = html;
+        dayView.innerHTML = `
+            <div class="events-list">
+                ${dayEvents.map(event => this.renderDayEvent(event)).join('')}
+            </div>
+        `;
     }
 
-    renderEvent(event) {
+    renderDayEvent(event) {
         const duration = (event.end - event.start) / (1000 * 60); // minutes
         const color = this.getEventColor(event.summary);
         
         return `
-            <div class="calendar-event" style="background: ${color};">
-                <div class="event-time-range">
-                    ${this.formatTime(event.start)} - ${this.formatTime(event.end)}
+            <div class="day-event" style="background: ${color};">
+                <div class="event-time">${this.formatTime(event.start)} - ${this.formatTime(event.end)}</div>
+                <div class="event-title">${event.summary}</div>
+                <div class="event-meta">
+                    <span>⏱️ ${this.formatDuration(duration)}</span>
                 </div>
-                <div class="event-summary">${event.summary}</div>
-                <div class="event-duration">${this.formatDuration(duration)}</div>
             </div>
         `;
+    }
+
+    previousDay() {
+        this.currentDay.setDate(this.currentDay.getDate() - 1);
+        this.displayDayCalendar();
+    }
+
+    nextDay() {
+        this.currentDay.setDate(this.currentDay.getDate() + 1);
+        this.displayDayCalendar();
+    }
+
+    formatDateLong(date) {
+        return date.toLocaleDateString('fr-FR', { 
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
     }
 
     getEventColor(summary) {
@@ -414,16 +440,6 @@ class SallesManager {
         if (summaryLower.includes('td')) return 'linear-gradient(135deg, #3B82F6, #2563EB)';
         if (summaryLower.includes('cm')) return 'linear-gradient(135deg, #10B981, #059669)';
         return 'linear-gradient(135deg, #64748B, #475569)';
-    }
-
-    previousWeek() {
-        this.currentWeekStart.setDate(this.currentWeekStart.getDate() - 7);
-        this.displayWeekCalendar();
-    }
-
-    nextWeek() {
-        this.currentWeekStart.setDate(this.currentWeekStart.getDate() + 7);
-        this.displayWeekCalendar();
     }
 
     getDayName(date) {

@@ -18,6 +18,15 @@
             </button>
         </div>
 
+        <!-- Avertissement -->
+        <div class="warning-card">
+            <div class="warning-icon">⚠️</div>
+            <div class="warning-content">
+                <strong>Information importante :</strong>
+                <p>Ce calendrier ne se met pas à jour automatiquement. Les données ont été récupérées d'ADE le <strong>25 octobre 2025</strong>. Des changements peuvent avoir été effectués depuis.</p>
+            </div>
+        </div>
+
         <!-- Salles disponibles -->
         <div class="available-now-card">
             <div class="collapsible-header" onclick="sallesManager.toggleAvailableNow()">
@@ -73,21 +82,21 @@
 
         <!-- Calendrier de la salle sélectionnée -->
         <div class="calendar-card" id="calendarCard" style="display: none;">
-            <h2 id="roomTitle">� Calendrier de la salle</h2>
+            <h2 id="roomTitle">📅 Calendrier de la salle</h2>
             
-            <!-- Navigation par semaine -->
-            <div class="week-navigation">
-                <button class="nav-btn" onclick="sallesManager.previousWeek()">
-                    ← Semaine précédente
+            <!-- Navigation par jour -->
+            <div class="day-navigation">
+                <button class="nav-btn" onclick="sallesManager.previousDay()">
+                    ← Jour précédent
                 </button>
-                <span id="weekDisplay">Semaine du ...</span>
-                <button class="nav-btn" onclick="sallesManager.nextWeek()">
-                    Semaine suivante →
+                <span id="dayDisplay">Aujourd'hui</span>
+                <button class="nav-btn" onclick="sallesManager.nextDay()">
+                    Jour suivant →
                 </button>
             </div>
 
-            <!-- Vue calendrier -->
-            <div class="calendar-view" id="calendarView">
+            <!-- Vue jour -->
+            <div class="day-view" id="dayView">
                 <!-- Généré par JS -->
             </div>
         </div>
