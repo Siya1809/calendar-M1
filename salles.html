@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier des Salles - Nautibus</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='80'>🚪</text></svg>">
+    <link rel="stylesheet" href="salles.css">
+</head>
+<body>
+        <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚪 Calendrier des Salles Nautibus</h1>
+            <p>Emploi du temps complet par salle</p>
+            <button class="back-button" onclick="window.location.href='index.html'">
+                ← Retour au calendrier
+            </button>
+        </div>
+
+        <!-- Salles disponibles -->
+        <div class="available-now-card">
+            <div class="collapsible-header" onclick="sallesManager.toggleAvailableNow()">
+                <h2>✅ Salles disponibles</h2>
+                <span class="toggle-icon" id="toggleIcon">▼</span>
+            </div>
+            <div class="collapsible-content" id="availableNowContent">
+                <!-- Choix du mode -->
+                <div class="time-mode-selector">
+                    <button class="mode-btn active" data-mode="now" onclick="sallesManager.setTimeMode('now')">
+                        🕐 Maintenant
+                    </button>
+                    <button class="mode-btn" data-mode="custom" onclick="sallesManager.setTimeMode('custom')">
+                        📅 Date & heure précise
+                    </button>
+                </div>
+
+                <!-- Formulaire date/heure personnalisée -->
+                <div id="customTimeForm" class="custom-time-form" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customDate">📅 Date</label>
+                            <input type="date" id="customDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="customTime">🕐 Heure</label>
+                            <input type="time" id="customTime" value="08:00">
+                        </div>
+                        <button class="search-btn" onclick="sallesManager.displayAvailableNow()">
+                            🔍 Rechercher
+                        </button>
+                    </div>
+                </div>
+
+                <div id="availableNowList">
+                    <!-- Généré par JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Sélecteur de salle -->
+        <div class="search-card">
+            <h2>📍 Voir le calendrier d'une salle</h2>
+            
+            <div class="form-group">
+                <label for="roomSelect">Sélectionner une salle</label>
+                <select id="roomSelect" onchange="sallesManager.selectRoomFromDropdown()">
+                    <option value="">-- Choisir une salle --</option>
+                    <!-- Options générées par JS -->
+                </select>
+            </div>
+        </div>
+
+        <!-- Calendrier de la salle sélectionnée -->
+        <div class="calendar-card" id="calendarCard" style="display: none;">
+            <h2 id="roomTitle">� Calendrier de la salle</h2>
+            
+            <!-- Navigation par semaine -->
+            <div class="week-navigation">
+                <button class="nav-btn" onclick="sallesManager.previousWeek()">
+                    ← Semaine précédente
+                </button>
+                <span id="weekDisplay">Semaine du ...</span>
+                <button class="nav-btn" onclick="sallesManager.nextWeek()">
+                    Semaine suivante →
+                </button>
+            </div>
+
+            <!-- Vue calendrier -->
+            <div class="calendar-view" id="calendarView">
+                <!-- Généré par JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" class="loader">
+        <div class="spinner"></div>
+        <p>Chargement du calendrier ADE...</p>
+    </div>
+
+    <script src="salles.js"></script>
+</body>
+</html>
