@@ -70,7 +70,25 @@ class ExamManager {
         }
         // Éviter les problèmes de fuseau horaire en créant la date directement
         const [year, month, day] = date.split('-').map(Number);
-        const [hours, minutes] = time.split(':').map(Number);
+        
+        // Gérer les formats de temps spéciaux comme "entre 08:00 et 13:00"
+        let hours, minutes;
+        if (time.includes('entre')) {
+            // Extraire la première heure mentionnée
+            const timeMatch = time.match(/(\d{1,2}):(\d{2})/);
+            if (timeMatch) {
+                hours = parseInt(timeMatch[1]);
+                minutes = parseInt(timeMatch[2]);
+            } else {
+                return null;
+            }
+        } else {
+            const timeParts = time.split(':');
+            if (timeParts.length !== 2) return null;
+            hours = parseInt(timeParts[0]);
+            minutes = parseInt(timeParts[1]);
+        }
+        
         return new Date(year, month - 1, day, hours, minutes);
     }
 
