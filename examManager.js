@@ -25,7 +25,9 @@ class ExamManager {
             // Enrichir les examens avec les infos UE et datetime
             this.exams = data.examens.map(exam => {
                 const hasValidDate = exam.date !== "NAN" && exam.date !== "TBA" && exam.date !== null;
-                const hasValidTime = exam.time !== "NAN" && exam.time !== "TBA" && exam.time !== null && /^\d{2}:\d{2}$/.test(exam.time);
+                // Accepter les formats HH:MM ou "entre HH:MM et HH:MM"
+                const hasValidTime = exam.time !== "NAN" && exam.time !== "TBA" && exam.time !== null && 
+                    (/^\d{2}:\d{2}$/.test(exam.time) || /entre\s+\d{1,2}:\d{2}/.test(exam.time));
                 
                 return {
                     ...exam,

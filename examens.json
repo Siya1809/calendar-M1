@@ -390,14 +390,14 @@
             "ue_id": "M1if05",
             "type": "TPN",
             "name": "TP Noté",
-            "date": "NAN",
-            "time": "NAN",
-            "duration": "NAN",
+            "date": "2026-01-05",
+            "time": "09:45",
+            "duration": 180,
             "location": "NAN",
             "description": "TP noté de réseaux",
-            "coefficient": "NAN",
+            "coefficient": "4%",
             "documents": "NAN",
-            "status": "date_missing"
+            "status": "to_confirm"
         },
         {
             "id": 25,
